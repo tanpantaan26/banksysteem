@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
 
         String test = "hallo";
         //TEST VAN TAN//
+        //Nieuwe test//
 
     }
 }
