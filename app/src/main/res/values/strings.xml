@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">banksysteem</string>
+    <string name="loginactivity_banknaam">BIG INTEREST</string>
+    <string name="loginactivity_logo">Logo</string>
+    <string name="loginactivity_hintGebruikersnaam">Gebruikersnaam</string>
+    <string name="loginactivity_hintWachtwoord">Wachtwoord</string>
+    <string name="loginactivity_registreren">REGISTREREN</string>
+    <string name="loginactivity_meerInfo">Meer info?</string>
 </resources>

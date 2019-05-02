@@ -1,4 +1,4 @@
-package com.example.banksysteem;
+package com.example.banksysteem.Controller;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class MeerFragment extends Fragment {
+import com.example.banksysteem.R;
+
+public class OverzichtFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.meer_fragment, container, false);
+        return inflater.inflate(R.layout.overzicht_fragment, container, false);
     }
 }
