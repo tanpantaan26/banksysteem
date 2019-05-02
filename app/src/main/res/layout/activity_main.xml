@@ -29,7 +29,7 @@
             android:layout_alignParentBottom="true"
             app:itemIconSize="26dp"
             android:theme="@style/BottomNavigationThem"
-            android:background="?android:attr/windowBackground"
+            android:background="@android:color/white"
             app:menu="@menu/bottom_navigation" />
 
 
