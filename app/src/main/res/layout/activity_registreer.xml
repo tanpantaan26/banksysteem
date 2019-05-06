@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.078"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/logo_bank" />
 
     <EditText
         android:id="@+id/eMailInput"
