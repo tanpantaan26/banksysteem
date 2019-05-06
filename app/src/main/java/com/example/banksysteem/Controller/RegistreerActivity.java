@@ -1,7 +1,9 @@
-package com.example.banksysteem;
+package com.example.banksysteem.Controller;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.banksysteem.R;
 
 public class RegistreerActivity extends AppCompatActivity {
 

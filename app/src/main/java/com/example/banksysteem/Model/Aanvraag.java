@@ -1,4 +1,4 @@
-package com.example.banksysteem;
+package com.example.banksysteem.Model;
 
 import java.util.Date;
 
