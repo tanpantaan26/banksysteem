@@ -10,8 +10,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.banksysteem.R;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -45,6 +50,20 @@ public class LoginActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
+                }
+
+                DatabaseConnector db = new DatabaseConnector();
+                try {
+                    String SQL = "Select * from Beheer";
+                    db.execute(SQL);
+                    Object oResult = db.get();
+                    System.out.println(oResult);
+                    Toast toast = Toast.makeText(getApplicationContext(), String.valueOf(oResult.toString()), Toast.LENGTH_LONG);
+                    toast.show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println(e);
                 }
             }
         });
