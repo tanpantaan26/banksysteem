@@ -1,15 +1,27 @@
 package com.example.banksysteem.Data;
 
+import android.os.AsyncTask;
+import android.util.Log;
+
 import org.json.simple.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DatabaseConnector {
+
+public class DatabaseConnector extends AsyncTask {
 
     private String host = "http://biginterest.vorrink.net";
 
+    /*
+    Default method to directly send sql statements to the webservice
+
+    Usage:
+    DatabaseConnector db = new DatabaseConnector();
+    String sql = "select * from klant";
+    String result = db.sendRequest(sql);
+     */
     public String sendRequest(String sql) throws IOException {
         URL url = new URL(host);
         HttpURLConnection client = (HttpURLConnection) url.openConnection();
@@ -42,7 +54,8 @@ public class DatabaseConnector {
 
         client.disconnect();
 
-        System.out.println(result);
+        Log.i("DatabaseConnector", "Sql result: " +  result);
+
 
         return result.toString();
     }
@@ -115,4 +128,15 @@ public class DatabaseConnector {
             return false;
         }
     }
+
+    @Override
+    protected Object doInBackground(Object[] objects) {
+        try {
+            return sendRequest(objects[0].toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
+

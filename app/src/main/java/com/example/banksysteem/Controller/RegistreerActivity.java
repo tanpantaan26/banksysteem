@@ -3,6 +3,7 @@ package com.example.banksysteem.Controller;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 
 import com.example.banksysteem.Data.DatabaseConnector;
 import com.example.banksysteem.R;
+
+import org.json.JSONArray;
 
 import java.io.IOException;
 
@@ -30,8 +33,15 @@ public class RegistreerActivity extends AppCompatActivity {
 
         String sql = "SELECT * FROM Beheer";
         try {
-            db.sendRequest(sql);
-        } catch (IOException e) {
+            db.execute(sql);
+            Object oResult = db.get();
+            Log.i("Registreeractivity", "sql result: " + oResult);
+
+            String strResult = oResult.toString();
+            JSONArray jResult = new JSONArray(strResult);
+            Log.i("Registreeractivity", "sql result: " + oResult);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
