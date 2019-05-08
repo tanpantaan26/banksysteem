@@ -28,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.nav_more:
                     manager.beginTransaction().replace(R.id.main_fragment_container, new MeerFragment()).commit();
                     break;
+                case R.id.nav_profile:
+                    manager.beginTransaction().replace(R.id.main_fragment_container, new ProfielFragment()).commit();
+                    break;
             }
             return true;
         }
