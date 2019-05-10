@@ -3,7 +3,6 @@ package com.example.banksysteem.Controller;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,14 +20,20 @@ import android.widget.Toast;
 
 import com.example.banksysteem.Data.DatabaseConnector;
 import com.example.banksysteem.R;
+import com.example.banksysteem.Util.ValidateAanvraagInput;
 
 import org.json.JSONArray;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GegevensRegistreerFragment extends Fragment {
 
     private EditText etVoornaam, etAchternaam, etAdres, etMail, etTelefoon,
             etBSN_KVK, etBedrijfsnaam;
     private DatabaseConnector db = new DatabaseConnector();
+    private RadioButton particulierRb, bedrijfRb;
+    private ValidateAanvraagInput valAvInput = new ValidateAanvraagInput();
 
     @Nullable
     @Override
@@ -64,8 +69,8 @@ public class GegevensRegistreerFragment extends Fragment {
         etBedrijfsnaam = view.findViewById(R.id.gegevens_registreer_etBedrijfsnaam);
 
 
-        final RadioButton particulierRb = view.findViewById(R.id.gegevens_registreer_rbParticulier);
-        final RadioButton bedrijfRb = view.findViewById(R.id.gegevens_registreer_rbBedrijf);
+        particulierRb = view.findViewById(R.id.gegevens_registreer_rbParticulier);
+        bedrijfRb = view.findViewById(R.id.gegevens_registreer_rbBedrijf);
         final RadioGroup radioGroup = view.findViewById(R.id.gegevens_registreer_radiogroup);
 
         //Check welke radiobutton is geselecteerd en plaats de juiste hint teksten en kvk/bsn
@@ -81,7 +86,7 @@ public class GegevensRegistreerFragment extends Fragment {
                     etTelefoon.setHint("Telefoonnummer");
                     etMail.setHint("Email");
 
-                    clearEdittext((ViewGroup) view.findViewById(R.id.gegevens_viewgroup));
+                    valAvInput.clearEdittext((ViewGroup) view.findViewById(R.id.gegevens_viewgroup));
                     etBedrijfsnaam.setText("1");
                 }
                 if (bedrijfRb.isChecked()) {
@@ -93,7 +98,7 @@ public class GegevensRegistreerFragment extends Fragment {
                     etMail.setHint("Email (Bedrijf)");
 
 
-                    clearEdittext((ViewGroup) view.findViewById(R.id.gegevens_viewgroup));
+                    valAvInput.clearEdittext((ViewGroup) view.findViewById(R.id.gegevens_viewgroup));
                 }
             }
         });
@@ -123,11 +128,22 @@ public class GegevensRegistreerFragment extends Fragment {
                 }
 
                 //check of alle velden ingevuld zijn
-                else if(emptyEdittext((ViewGroup) view.findViewById(R.id.gegevens_viewgroup))){
+                else if(valAvInput.emptyEdittext((ViewGroup) view.findViewById(R.id.gegevens_viewgroup))){
                     //check of email voldoet aan format aaa@bb.cc
-                    if (!checkEmail(etMail.getText().toString())){
+                    if (!valAvInput.checkEmail(etMail.getText().toString())){
                         etMail.setError("Voer een geldige email in");
                     }
+
+                    //validate naam
+                    if(!valAvInput.validateLetters(etVoornaam.getText().toString())){
+                        etVoornaam.setError("Voornaam mag alleen letters bevatten");
+                    };
+                    if(!valAvInput.validateLetters(etAchternaam.getText().toString())){
+                        etAchternaam.setError("Achternaam mag alleen letters bevatten");
+                    };
+
+                    //validate bsn en kvk
+                    checkKvkBsn(etBSN_KVK.getText().toString());
                     Toast.makeText(getContext(), "Alle tekstvelden zijn gevuld", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(getContext(), "lege velden", Toast.LENGTH_SHORT).show();
@@ -138,32 +154,20 @@ public class GegevensRegistreerFragment extends Fragment {
         });
     }
 
-    //methode om alle invoervelden van het type Edittext in dit scherm leeg te maken
-    public void clearEdittext(ViewGroup root) {
-        for (int i = 0; i < root.getChildCount(); i++) {
-            View view = root.getChildAt(i);
-            if (view instanceof EditText) {
-                ((EditText) view).setText("");
+    private void checkKvkBsn(String kvk_bsn){
+
+        if (particulierRb.isChecked()){
+            int bsn = Integer.parseInt(kvk_bsn);
+            if(!valAvInput.isValidBSN(bsn)){
+                etBSN_KVK.setError("Vul een geldige bsn in");
             }
         }
-    }
-
-    //check of er tekstvelden leeg zijn
-    public boolean emptyEdittext(ViewGroup root) {
-        for (int i = 0; i < root.getChildCount(); i++) {
-            View view = root.getChildAt(i);
-            if (view instanceof EditText) {
-                if (TextUtils.isEmpty(((EditText) view).getText())){
-                    ((EditText) view).setError("Dit is een verplicht veld");
-                    return false;
-                }
+        if (bedrijfRb.isChecked()){
+            if (kvk_bsn.length() != 8){
+                etBSN_KVK.setError("Kvk moet 8 karakters lang zijn");
             }
-        } return true;
-    }
+        }
 
-    //methode die checkt of ingevulde email voldoet aan email format voorwaarden
-    private boolean checkEmail(String email){
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
 }
