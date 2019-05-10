@@ -55,202 +55,20 @@
 
     </android.support.constraint.ConstraintLayout>
 
-
-    <RadioGroup
-        android:id="@+id/registreeractivity_radiogroup"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
+    <FrameLayout
+        android:id="@+id/registreeractivity_fragment_container"
+        android:layout_width="395dp"
+        android:layout_height="645dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.47"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.154">
-
-        <RadioButton
-            android:id="@+id/registreeractivity_rbParticulier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_weight="1"
-            android:text="Particulier"
-            android:textSize="16sp" />
-
-        <RadioButton
-            android:id="@+id/registreeractivity_rbBedrijf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Bedrijf"
-            android:textSize="16sp" />
-    </RadioGroup>
-
-    <EditText
-        android:id="@+id/registreeractivity_etVoornaam"
-        android:layout_width="325dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:drawableStart="@drawable/ic_person_black_24dp"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Voornaam"
-        android:inputType="textPersonName"
-        app:backgroundTint="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registreeractivity_radiogroup"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <EditText
-        android:id="@+id/registreeractivity_etAchternaam"
-        android:layout_width="325dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:drawableStart="@drawable/ic_person_black_24dp"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Achternaam"
-        android:inputType="textPersonName"
-        app:backgroundTint="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registreeractivity_etVoornaam"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <EditText
-        android:id="@+id/registreeractivity_etEmail"
-        android:layout_width="325dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:drawableStart="@drawable/ic_email_black_24dp"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="E-mail"
-        android:inputType="textEmailAddress"
-        app:backgroundTint="@android:color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registreeractivity_etAdres"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/registreeractivity_header">
 
-    <EditText
-        android:id="@+id/registreeractivity_etTelefoonnummer"
-        android:layout_width="325dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:drawableStart="@drawable/ic_phone_black_24dp"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Telefoonnummer"
-        android:inputType="phone"
-        app:backgroundTint="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registreeractivity_etEmail"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <EditText
-        android:id="@+id/registreeractivity_etBSN_KVK"
-        android:layout_width="325dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="224dp"
-        android:drawableStart="@drawable/ic_assignment_black_24dp"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Bsn"
-        android:inputType="number"
-        app:backgroundTint="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/registreeractivity_etTelefoonnummer"
-        app:layout_constraintVertical_bias="0.0" />
-
-
-    <EditText
-        android:id="@+id/registreeractivity_etAdres"
-        android:layout_width="325dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
-        android:drawableStart="@drawable/ic_home_black_24dp"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Adres"
-        android:inputType="textPostalAddress"
-        app:backgroundTint="@android:color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registreeractivity_etAchternaam" />
-
-    <EditText
-        android:id="@+id/registreeractivity_etBedrijfsnaam"
-        android:layout_width="325dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:drawableStart="@drawable/ic_business_black_24dp"
-        android:drawablePadding="10dp"
-        android:ems="10"
-        android:hint="Bedrijfsnaam"
-        android:inputType="textPersonName"
-        android:visibility="invisible"
-        app:backgroundTint="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registreeractivity_etBSN_KVK"
-        app:layout_constraintVertical_bias="0.02" />
-
-    <Button
-        android:id="@+id/registreeractivity_btnVerstuurAanvraag"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@android:color/black"
-        android:padding="10dp"
-        android:text="Aanvraag versturen"
-        android:textColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registreeractivity_etBedrijfsnaam" />
+    </FrameLayout>
 
 
 </android.support.constraint.ConstraintLayout>
