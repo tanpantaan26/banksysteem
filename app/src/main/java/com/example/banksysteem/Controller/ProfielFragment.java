@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,7 @@ public class ProfielFragment extends Fragment {
     public TextView emailView;
     public Button editButton;
     DatabaseConnector db;
-
+    JSONArray jResult;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.profiel_fragment, container, false);
@@ -34,69 +35,54 @@ public class ProfielFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         db = new DatabaseConnector();
+        String sql = "select * from klant";
+        try {
+            db.execute(sql);
+            Object oResult = db.get();
+            String strResult = oResult.toString();
+            jResult = new JSONArray(strResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         usernameView = getView().findViewById(R.id.usernameView);
-            String sql = "select KlantID from KLANT where Voornaam = John and Achternaam = Doe";
             try {
-                db.sendRequest(sql);
-                Object oResult = db.get();
-                String strResult = oResult.toString();
-                JSONArray jResult = new JSONArray(strResult);
-                usernameView.setText(""+jResult);
+                usernameView.setText(jResult.getString(0));
+                Log.i("e", jResult.toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         voornaamView =  getView().findViewById(R.id.voornaamView);
-            sql = "select Voornaam from KLANT where KlantID = 123456789";
             try {
-                db.sendRequest(sql);
-                Object oResult = db.get();
-                String strResult = oResult.toString();
-                JSONArray jResult = new JSONArray(strResult);
-                voornaamView.setText(""+jResult);
+                voornaamView.setText(jResult.getString(0));
+                Log.i("e", jResult.toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         achternaamView = getView().findViewById(R.id.achternaamView);
-        sql = "select Achternaam from KLANT where KlantID = 123456789";
         try {
-            db.sendRequest(sql);
-            Object oResult = db.get();
-            String strResult = oResult.toString();
-            JSONArray jResult = new JSONArray(strResult);
-            achternaamView.setText(""+jResult);
+            achternaamView.setText(jResult.getString(0));
+            Log.i("e", jResult.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
         adresView = getView().findViewById(R.id.adresView);
-        sql = "select Adres from KLANT where KlantID = 123456789";
         try {
-            db.sendRequest(sql);
-            Object oResult = db.get();
-            String strResult = oResult.toString();
-            JSONArray jResult = new JSONArray(strResult);
-            adresView.setText(""+jResult);
+            adresView.setText(jResult.getString(0));
+            Log.i("e", jResult.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
         telefoonView = getView().findViewById(R.id.telefoonView);
-        sql = "select Telefoon from KLANT where KlantID = 123456789";
         try {
-            db.sendRequest(sql);
-            Object oResult = db.get();
-            String strResult = oResult.toString();
-            JSONArray jResult = new JSONArray(strResult);
-            telefoonView.setText(""+jResult);
+            telefoonView.setText(jResult.getString(0));
+            Log.i("e", jResult.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
         emailView = getView().findViewById(R.id.emailView);
-        sql = "select Email from KLANT where KlantID = 123456789";
         try {
-            db.sendRequest(sql);
-            Object oResult = db.get();
-            String strResult = oResult.toString();
-            JSONArray jResult = new JSONArray(strResult);
-            emailView.setText(""+jResult);
+            emailView.setText(jResult.getString(0));
+            Log.i("e", jResult.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
