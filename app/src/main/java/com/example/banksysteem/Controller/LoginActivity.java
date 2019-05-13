@@ -55,6 +55,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                Intent intent = new Intent(getApplicationContext(), RegistreerActivity.class);
+                startActivity(intent);
+
             }
         });
 
@@ -63,6 +66,9 @@ public class LoginActivity extends AppCompatActivity {
         tvInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Intent intent = new Intent(getApplicationContext(), InfoActivity.class);
+                startActivity(intent);
 
             }
         });
