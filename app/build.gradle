@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.banksysteem"
-        minSdkVersion 26
+        minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -28,9 +28,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation files('libs/json-simple-1.1.1.jar')
-    implementation ('com.wdullaer:materialdatetimepicker:4.2.0') {
-        exclude group: 'androidx.appcompat'
-        exclude group: 'androidx.recyclerview'
-    }
+
 
 }
