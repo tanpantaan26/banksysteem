@@ -1,6 +1,8 @@
 package com.example.banksysteem.Model;
 
-public class Klant {
+import java.io.Serializable;
+
+public class Klant implements Serializable {
 
     private String klantId;
     private String voornaam;
@@ -10,6 +12,7 @@ public class Klant {
     private String adres;
     private String gebruikersnaam;
     private String wachtwoord;
+    private String bedrijfsnaam;
 
     public Klant(String klantId, String voornaam, String achternaam, String telefoonnummer,
                  String email, String adres, String gebruikersnaam, String wachtwoord) {
@@ -21,6 +24,25 @@ public class Klant {
         this.adres = adres;
         this.gebruikersnaam = gebruikersnaam;
         this.wachtwoord = wachtwoord;
+    }
+
+    public Klant(String klantId, String voornaam, String achternaam, String telefoonnummer, String email, String adres) {
+        this.klantId = klantId;
+        this.voornaam = voornaam;
+        this.achternaam = achternaam;
+        this.telefoonnummer = telefoonnummer;
+        this.email = email;
+        this.adres = adres;
+    }
+
+    public Klant(String klantId, String voornaam, String achternaam, String telefoonnummer, String email, String adres, String bedrijfsnaam) {
+        this.klantId = klantId;
+        this.voornaam = voornaam;
+        this.achternaam = achternaam;
+        this.telefoonnummer = telefoonnummer;
+        this.email = email;
+        this.adres = adres;
+        this.bedrijfsnaam = bedrijfsnaam;
     }
 
     public String getKlantId() {
@@ -85,5 +107,13 @@ public class Klant {
 
     public void setWachtwoord(String wachtwoord) {
         this.wachtwoord = wachtwoord;
+    }
+
+    public String getBedrijfsnaam() {
+        return bedrijfsnaam;
+    }
+
+    public void setBedrijfsnaam(String bedrijfsnaam) {
+        this.bedrijfsnaam = bedrijfsnaam;
     }
 }
