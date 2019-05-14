@@ -55,7 +55,6 @@ public class AfspraakRegistreerFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-
         //arraylist met beschikbare tijden
         ArrayList<String> afspraakTijden = new ArrayList<>();
         afspraakTijden.add("09:00");
@@ -93,8 +92,6 @@ public class AfspraakRegistreerFragment extends Fragment {
 
             }
         });
-
-
 
 
         //haal datums op die in de tabel afspraak zitten en kijk welke tijden er al bezet zijn.
@@ -135,19 +132,14 @@ public class AfspraakRegistreerFragment extends Fragment {
                 //vergelijk met afsrpaaktijden en verwijder in afsrpaaktijden de tijden uit de database
                 afspraakTijden.removeAll(tijdenBezet);
 
-                if (afspraakTijden.size() > 0){
+                if (afspraakTijden.size() > 0) {
                     //Vul de spinner met de tijden die nog wel beschikbaar zijn die datum
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, afspraakTijden);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, afspraakTijden);
                     spinnerTijden.setAdapter(adapter);
+                } else {
+                    Toast.makeText(getContext(), "Er zijn geen tijden beschikbaar op deze datum", Toast.LENGTH_SHORT).show();
                 }
-                else {
 
-                }
-
-
-
-                //TODO: als de lijst leeg is (of alle tijden al voorkomen in de database -> zet de datum op disabled
-                //TODO: datum disablenen = toevoegen aan lijst Calender[] days
 
             }
 
