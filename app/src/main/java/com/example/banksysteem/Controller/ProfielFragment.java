@@ -16,6 +16,7 @@ import com.example.banksysteem.Data.DatabaseConnector;
 import com.example.banksysteem.R;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class ProfielFragment extends Fragment {
     public TextView usernameView;
@@ -35,7 +36,7 @@ public class ProfielFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         db = new DatabaseConnector();
-        String sql = "select * from klant";
+        String sql = "select * from Klant";
         try {
             db.execute(sql);
             Object oResult = db.get();
@@ -44,48 +45,105 @@ public class ProfielFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         usernameView = getView().findViewById(R.id.usernameView);
             try {
-                usernameView.setText(jResult.getString(0));
-                Log.i("e", jResult.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                for (int i = 0; i < jResult.length(); i++) {
+                    try {
+                        JSONObject jsonObject = (JSONObject) jResult.get(i);
+                        String userName = (String) jsonObject.get("Gebruikersnaam");
+                        usernameView.setText(""+ userName);
+
+                        Log.i("e", jResult.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                }catch (Exception e) {
+                    e.printStackTrace();}
+
         voornaamView =  getView().findViewById(R.id.voornaamView);
             try {
-                voornaamView.setText(jResult.getString(0));
-                Log.i("e", jResult.toString());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        achternaamView = getView().findViewById(R.id.achternaamView);
+                for (int i = 0; i < jResult.length(); i++) {
+                    try {
+                        JSONObject jsonObject = (JSONObject) jResult.get(i);
+                        String firstName = (String) jsonObject.get("Voornaam");
+                        voornaamView.setText(""+ firstName);
+
+                        Log.i("e", jResult.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }catch (Exception e) {
+                e.printStackTrace();}
+
+        achternaamView =  getView().findViewById(R.id.achternaamView);
         try {
-            achternaamView.setText(jResult.getString(0));
-            Log.i("e", jResult.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            for (int i = 0; i < jResult.length(); i++) {
+                try {
+                    JSONObject jsonObject = (JSONObject) jResult.get(i);
+                    String lastName = (String) jsonObject.get("Achternaam");
+                    achternaamView.setText(""+ lastName);
+
+                    Log.i("e", jResult.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();}
+
         adresView = getView().findViewById(R.id.adresView);
         try {
-            adresView.setText(jResult.getString(0));
-            Log.i("e", jResult.toString());
-        } catch (Exception e) {
+            for (int i = 0; i < jResult.length(); i++) {
+                try {
+                    JSONObject jsonObject = (JSONObject) jResult.get(i);
+                    String adres = (String) jsonObject.get("Adres");
+                    adresView.setText(""+ adres);
+
+                    Log.i("e", jResult.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }catch (Exception e) {
             e.printStackTrace();
         }
+
         telefoonView = getView().findViewById(R.id.telefoonView);
         try {
-            telefoonView.setText(jResult.getString(0));
-            Log.i("e", jResult.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            for (int i = 0; i < jResult.length(); i++) {
+                try {
+                    JSONObject jsonObject = (JSONObject) jResult.get(i);
+                    String telefoon = (String) jsonObject.get("Telefoon");
+                    telefoonView.setText(""+ telefoon);
+
+                    Log.i("e", jResult.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();}
+
         emailView = getView().findViewById(R.id.emailView);
         try {
-            emailView.setText(jResult.getString(0));
-            Log.i("e", jResult.toString());
-        } catch (Exception e) {
+            for (int i = 0; i < jResult.length(); i++) {
+                try {
+                    JSONObject jsonObject = (JSONObject) jResult.get(i);
+                    String email = (String) jsonObject.get("Email");
+                    emailView.setText(""+ email);
+
+                    Log.i("e", jResult.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }catch (Exception e) {
             e.printStackTrace();
         }
+
         editButton = getView().findViewById(R.id.editButton);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
