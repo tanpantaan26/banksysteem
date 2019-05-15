@@ -33,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.nav_profile:
                     manager.beginTransaction().replace(R.id.main_fragment_container, new ProfielFragment()).commit();
                     break;
+                case R.id.nav_transaction:
+                    manager.beginTransaction().replace(R.id.main_fragment_container, new BoekingFragment()).commit();
+                    break;
             }
             return true;
         }
