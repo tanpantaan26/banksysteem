@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".Controller.ProfielFragment">
 
-    <TextView
+    <EditText
         android:id="@+id/voornaamView"
         android:layout_width="306dp"
         android:layout_height="46dp"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.376" />
 
-    <TextView
+    <EditText
         android:id="@+id/achternaamView"
         android:layout_width="306dp"
         android:layout_height="46dp"
@@ -36,7 +36,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.474" />
 
-    <TextView
+    <EditText
         android:id="@+id/adresView"
         android:layout_width="306dp"
         android:layout_height="46dp"
@@ -51,7 +51,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.754" />
 
-    <TextView
+    <EditText
         android:id="@+id/emailView"
         android:layout_width="306dp"
         android:layout_height="46dp"
@@ -66,7 +66,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.657" />
 
-    <TextView
+    <EditText
         android:id="@+id/telefoonView"
         android:layout_width="306dp"
         android:layout_height="46dp"
@@ -80,21 +80,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.565" />
-
-    <TextView
-        android:id="@+id/usernameView"
-        android:layout_width="306dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Gebruikersnaam"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.273" />
 
     <TextView
         android:id="@+id/fragmentTitle"
@@ -127,4 +112,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.92" />
+
+    <EditText
+        android:id="@+id/usernameView"
+        android:layout_width="306dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Gebruikersnaam"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.282" />
 </android.support.constraint.ConstraintLayout>
