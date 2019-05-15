@@ -7,12 +7,23 @@
         android:title="Home"/>
 
     <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/ic_perm_identity_black_24dp"
+        android:title= "Profiel"/>
+
+    <item
+        android:id="@+id/nav_transactie"
+        android:icon="@drawable/ic_transform_black_24dp"
+        android:title= "Transactie"/>
+
+    <item
+        android:id="@+id/nav_producten"
+        android:icon="@drawable/ic_assignment_black_24dp"
+        android:title= "Producten"/>
+
+    <item
         android:id="@+id/nav_more"
         android:icon="@drawable/ic_apps_black_24dp"
         android:title= "Meer"/>
-    <item
-        android:id="@+id/nav_profile"
-        android:icon="@drawable/ic_perm_identity_black_24dp"
-        android:title= "Profiel"/>1
 
 </menu>

@@ -22,14 +22,5 @@ public class RegistreerActivity extends AppCompatActivity {
         //als deze navigeert naar RegistreerActivty
         getSupportFragmentManager().beginTransaction().replace(R.id.registreeractivity_fragment_container, new GegevensRegistreerFragment()).commit();
 
-        //button terug naar login scherm
-        ImageButton btnTerug = findViewById(R.id.registreeractivity_btnTerug);
-        btnTerug.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 }

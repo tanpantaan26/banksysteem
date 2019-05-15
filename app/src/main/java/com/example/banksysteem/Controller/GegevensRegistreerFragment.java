@@ -65,7 +65,7 @@ public class GegevensRegistreerFragment extends Fragment {
 
                     etBedrijfsnaam.setVisibility(View.INVISIBLE);
 
-                    etBSN_KVK.setHint("BSN");
+                    etBSN_KVK.setText("792481689");
                     etAdres.setHint("Adres");
                     etTelefoon.setHint("Telefoonnummer");
                     etMail.setHint("Email");
@@ -119,7 +119,7 @@ public class GegevensRegistreerFragment extends Fragment {
                     etVoornaam.setError("Voornaam mag alleen letters bevatten");
                 } else if (!valAvInput.validateLetters(etAchternaam.getText().toString())) {
                     etAchternaam.setError("Achternaam mag alleen letters bevatten");
-                } /*else if (!checkKvkBsn(etBSN_KVK.getText().toString())) {
+                } else if (!checkKvkBsn(etBSN_KVK.getText().toString())) {
                     if (particulierRb.isChecked()) {
                         etBSN_KVK.setError("Vul een geldige bsn in");
 
@@ -128,7 +128,7 @@ public class GegevensRegistreerFragment extends Fragment {
                         etBSN_KVK.setError("Kvk moet 8 tekens lang zijn");
 
                     }
-                }*/ else if (!isAlKlant(etBSN_KVK.getText().toString())) {
+                }else if (!isAlKlant(etBSN_KVK.getText().toString())) {
 
                 } else {
 
