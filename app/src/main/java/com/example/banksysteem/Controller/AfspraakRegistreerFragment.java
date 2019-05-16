@@ -20,6 +20,7 @@ import com.example.banksysteem.Data.DatabaseConnector;
 import com.example.banksysteem.Model.Afspraak;
 import com.example.banksysteem.Model.Klant;
 import com.example.banksysteem.R;
+import com.example.banksysteem.Util.AanvraagSoort;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,8 +29,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
+
+/**
+ * @author Inge
+ */
 
 public class AfspraakRegistreerFragment extends Fragment implements DatePicker.OnDateChangedListener {
 
@@ -124,7 +128,8 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
             public void onClick(View view) {
 
                 //voeg klant en afspraak toe aan database
-                Afspraak afspraak = new Afspraak(klant.getKlantId(), etDatepicker.getText().toString(), spinnerTijden.getSelectedItem().toString());
+                Afspraak afspraak = new Afspraak(klant.getKlantId(), etDatepicker.getText().toString(), spinnerTijden.getSelectedItem().toString(),
+                        AanvraagSoort.NIEUWE_KLANT);
 
                 Log.d("Afspraak", "Afspraak gegevens: " + afspraak.getDatum() + afspraak.getTijd() + afspraak.getKlantId());
 
@@ -167,9 +172,9 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
 
     }
 
-    private void insertAfspraak(Afspraak af) {
+    public void insertAfspraak(Afspraak af) {
 
-        String sql = "INSERT INTO Afspraak VALUES('" + af.getDatum() + "','" + af.getTijd() + "','" + af.getKlantId() + "');";
+        String sql = "INSERT INTO Afspraak VALUES('" + af.getDatum() + "','" + af.getTijd() + "','" + af.getKlantId() + "','" + af.getAfspraakSoort() + "');";
 
         try {
             DatabaseConnector db = new DatabaseConnector();
@@ -255,7 +260,7 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
                 Log.d("Afspraak", "Tijdenbezet" + tijdenBezet);
                 //vergelijk met afsrpaaktijden en verwijder in afsrpaaktijden de tijden uit de database
                 afspraakTijden.removeAll(tijdenBezet);
-                Log.d("Afspraak", "Tijdenbezet" + afspraakTijden);
+                Log.d("Afspraak", "Tijden beschikbaar" + afspraakTijden);
 
                 if (afspraakTijden.size() > 0) {
                     //Vul de spinner met de tijden die nog wel beschikbaar zijn die datum
@@ -274,7 +279,7 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
 
     }
 
-    private void vulArrayList(ArrayList<String> arrayList) {
+    public void vulArrayList(ArrayList<String> arrayList) {
 
         arrayList.clear();
         arrayList.add("09:00");

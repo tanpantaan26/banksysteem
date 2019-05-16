@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.example.banksysteem.R;
 
+/**
+ * @author Inge
+ */
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNav;

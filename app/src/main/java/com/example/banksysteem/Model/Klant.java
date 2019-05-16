@@ -2,6 +2,9 @@ package com.example.banksysteem.Model;
 
 import java.io.Serializable;
 
+/**
+ * @author Inge
+ */
 public class Klant implements Serializable {
 
     private String klantId;

@@ -9,7 +9,7 @@
     tools:context=".Controller.RegistreerActivity">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/registreeractivity_header"
+        android:id="@+id/aanvraagActivity_header"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="@android:color/white"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/registreeractivity_HeaderTekst"
+            android:id="@+id/aanvraagActivity_HeaderTekst"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
@@ -50,7 +50,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registreeractivity_header">
+        app:layout_constraintTop_toBottomOf="@+id/aanvraagActivity_header">
 
     </FrameLayout>
 

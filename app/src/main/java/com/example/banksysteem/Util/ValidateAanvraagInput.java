@@ -9,6 +9,9 @@ import android.widget.EditText;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author Inge
+ */
 public class ValidateAanvraagInput {
 
     //methode om alle invoervelden van het type Edittext in dit scherm leeg te maken

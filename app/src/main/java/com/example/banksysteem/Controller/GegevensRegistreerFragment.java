@@ -24,7 +24,9 @@ import com.example.banksysteem.Model.Klant;
 import com.example.banksysteem.R;
 import com.example.banksysteem.Util.ValidateAanvraagInput;
 
-
+/**
+ * @author Inge
+ */
 public class GegevensRegistreerFragment extends Fragment {
 
     private EditText etVoornaam, etAchternaam, etAdres, etMail, etTelefoon,

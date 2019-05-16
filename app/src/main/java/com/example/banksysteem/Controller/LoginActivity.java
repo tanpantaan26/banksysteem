@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.example.banksysteem.R;
 
+/**
+ * @author Inge
+ */
 public class LoginActivity extends AppCompatActivity {
 
     @Override

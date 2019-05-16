@@ -9,6 +9,9 @@ import android.widget.ImageButton;
 
 import com.example.banksysteem.R;
 
+/**
+ * @author Inge
+ */
 public class RegistreerActivity extends AppCompatActivity {
 
 

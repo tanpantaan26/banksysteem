@@ -1,15 +1,20 @@
 package com.example.banksysteem.Model;
 
+/**
+ * @author Inge
+ */
 public class Afspraak {
 
     private String klantId;
     private String datum;
     private String tijd;
+    private String afspraakSoort;
 
-    public Afspraak(String klantId, String datum, String tijd) {
+    public Afspraak(String klantId, String datum, String tijd, String afspraakSoort) {
         this.klantId = klantId;
         this.datum = datum;
         this.tijd = tijd;
+        this.afspraakSoort = afspraakSoort;
     }
 
     public String getKlantId() {
@@ -34,6 +39,14 @@ public class Afspraak {
 
     public void setTijd(String tijd) {
         this.tijd = tijd;
+    }
+
+    public String getAfspraakSoort() {
+        return afspraakSoort;
+    }
+
+    public void setAfspraakSoort(String afspraakSoort) {
+        this.afspraakSoort = afspraakSoort;
     }
 }
 

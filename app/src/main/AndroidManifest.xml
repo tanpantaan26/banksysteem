@@ -23,6 +23,7 @@
         <activity android:name=".Controller.MainActivity" />
         <activity android:name=".Controller.RegistreerActivity" />
         <activity android:name=".Controller.InfoActivity" />
+        <activity android:name=".Controller.AanvraagActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
