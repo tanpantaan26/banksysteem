@@ -40,7 +40,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
     private ArrayList<String> afspraakTijden = new ArrayList<>();
     private String afspraaksoort;
     private ArrayList<Rekening> rekeningenKlant;
-    private ArrayList<Afspraak> afsprakenKlant;
+    private ArrayList<String> afsprakenKlant;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     @Override
@@ -136,36 +136,32 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
             @Override
             public void onClick(View view) {
 
+                ArrayList<Rekening> rekeningen = haalRekeningenKlantOp();
+                //check of de klant al aanvragen heeft
+                ArrayList<String> afspraken = haalAfsprakenKlantOp();
+                Log.d("AanvraagAfspraak", "afspraken klant vanaf vandaag: " + afspraken);
+
+
                 //check of de gebruiker een keuze heeft gemaakt voor een soort product
                 if (afspraaksoort == null) {
                     Toast.makeText(getApplicationContext(), "Maak een keuze", Toast.LENGTH_SHORT).show();
+                } else if (checkKlantLening(rekeningen)) {
+                    Toast.makeText(getApplicationContext(), "U heeft al een lening", Toast.LENGTH_SHORT).show();
+                } else if (checkKlantSchuld(rekeningen)) {
+                    Toast.makeText(getApplicationContext(), "U heeft schuld", Toast.LENGTH_SHORT).show();
+                } else if (checkAanvragen(afspraken)) {
+                    Toast.makeText(getApplicationContext(), "U heeft hier al een aanvraag voor", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), afspraaksoort, Toast.LENGTH_SHORT).show();
+                    Log.d("AanvraagActivity", "else aangeroepen");
+                    //voeg afspraak toe aan database
+                    Afspraak afspraak = new Afspraak("217740078", etDatepicker.getText().toString(), spinnerTijden.getSelectedItem().toString(),
+                            afspraaksoort);
+                    Log.d("AanvraagActivity", "Nieuwe afspraak: " + afspraak.getDatum() + afspraak.getTijd() + afspraak.getAfspraakSoort());
+                    afspraakRegistreerFragment.insertAfspraak(afspraak);
+
                 }
-
-                ArrayList<Rekening> rekeningen = haalRekeningenKlantOp();
-
-                //check of de klant al een lening heeft
-                if (afspraaksoort.equals(AanvraagSoort.DOORLOPEND_KREDIET) || afspraaksoort.equals(AanvraagSoort.PERSOONLIJKE_LENING)) {
-                    checkKlantLening(rekeningen);
-                }
-                //check of de klant schuld heeft
-                checkKlantSchuld(rekeningen);
-
-                ArrayList<Afspraak> afspraken = haalAfsprakenKlantOp();
-                Log.d("AanvraagAfspraak", "afspraken klant vanaf vandaag: " + afspraken);
-                //check of de klant al aanvragen heeft
-                //Als klant al een aanvraag voor een lening of doorlopend krediet heeft dan mag deze
-                //geen aanvraag doen
-
-                //Als de klant al een aanvraag heeft voor aangeklikte soort dan mag deze daar geen aanvraag voor doen
-                //maar wel voor ander soort (tenzij lening)
-
-                //voeg afspraak toe aan database
-
             }
         });
-
 
     }
 
@@ -250,7 +246,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
     //TODO: geef klantid van ingelogde klant mee
     private ArrayList<Rekening> haalRekeningenKlantOp() {
 
-
+        Log.d("Aanvraag", "HaalRekeningenKlantOp aangeroepen");
         String sql = "SELECT * FROM KlantRekening JOIN Rekening ON " +
                 "KlantRekening.RekeningRekeningnummer = Rekening.Rekeningnummer " +
                 "WHERE KlantklantID = '217740078'";
@@ -298,35 +294,39 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
         return rekeningenKlant;
     }
 
-    private void checkKlantLening(ArrayList<Rekening> rekeningenKlant) {
+    private boolean checkKlantLening(ArrayList<Rekening> rekeningenKlant) {
 
-
+        Log.d("Aanvraag", "CheckKlantLening aangeroepen");
         for (Rekening rek : rekeningenKlant) {
             if (rek.getRekeningSoort().contains(AanvraagSoort.DOORLOPEND_KREDIET) || rek.getRekeningSoort().contains(AanvraagSoort.PERSOONLIJKE_LENING)) {
-                Toast.makeText(this, "U heeft al een lening", Toast.LENGTH_SHORT).show();
+                return true;
 
             } else {
                 Toast.makeText(this, "Alles oke", Toast.LENGTH_SHORT).show();
+                return false;
             }
         }
+        return false;
     }
 
-    private void checkKlantSchuld(ArrayList<Rekening> rekeningenKlant) {
+    private boolean checkKlantSchuld(ArrayList<Rekening> rekeningenKlant) {
 
-
+        Log.d("Aanvraag", "CheckKlantSchuld aangeroepen");
         for (Rekening rek : rekeningenKlant) {
             if (Double.toString(rek.getSaldo()).contains("-")) {
-                Toast.makeText(this, "U heeft schulden", Toast.LENGTH_SHORT).show();
+                return true;
 
             } else {
                 Toast.makeText(this, "U heeft geen schulden", Toast.LENGTH_SHORT).show();
+                return false;
             }
         }
+        return false;
 
     }
 
-    private ArrayList<Afspraak> haalAfsprakenKlantOp() {
-
+    private ArrayList<String> haalAfsprakenKlantOp() {
+        Log.d("Aanvraag", "HaalAfsprakenKlantOp aangeroepen");
         //haal alle afspraken van een klant op uit de database
         String sql = "SELECT * FROM Afspraak WHERE KlantklantID = '217740078'";
 
@@ -341,7 +341,8 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
             Log.d("AanvraagAfspraken", "strResult: " + strResultReplace);
 
             if (strResultReplace.equals("msg:select:empty")) {
-                Toast.makeText(this, "Er is iets misgegaan", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Er zijn nog geen afspraken", Toast.LENGTH_SHORT).show();
+                afsprakenKlant = new ArrayList<>();
 
             } else {
 
@@ -358,10 +359,9 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
                     String afspraaksoort = jsonObject.getString("Soort");
 
                     if (!date.before(new Date())) {
-                        String datum = dateFormat.format(date);
 
-                        Afspraak afspraak = new Afspraak(datum, tijd, afspraaksoort);
-                        afsprakenKlant.add(afspraak);
+
+                        afsprakenKlant.add(afspraaksoort);
 
                     }
 
@@ -374,6 +374,51 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
         }
         return afsprakenKlant;
     }
+
+    private boolean checkAanvragen(ArrayList<String> afsprakenKlant) {
+
+        Log.d("Aanvraag", "CheckAanvragen aangeroepen");
+        if (afsprakenKlant.isEmpty()) {
+            return false;
+        }
+
+
+        switch (afspraaksoort) {
+            case AanvraagSoort.BETAALREKENING:
+                if (afsprakenKlant.contains(AanvraagSoort.BETAALREKENING)) {
+                    Toast.makeText(this, "U heeft al een aanvraag voor een betaalrekening", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                break;
+            case AanvraagSoort.SPAARREKENING:
+                if (afsprakenKlant.contains(AanvraagSoort.SPAARREKENING)) {
+                    Toast.makeText(this, "U heeft al een aanvraag voor een spaarrekening", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                break;
+            case AanvraagSoort.DEPOSITO:
+                if (afsprakenKlant.contains(AanvraagSoort.DEPOSITO)) {
+                    Toast.makeText(this, "U heeft al een aanvraag voor een deposito", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                break;
+            case AanvraagSoort.PERSOONLIJKE_LENING:
+                if (afsprakenKlant.contains(AanvraagSoort.PERSOONLIJKE_LENING) || afsprakenKlant.contains(AanvraagSoort.DOORLOPEND_KREDIET)) {
+                    Toast.makeText(this, "U heeft al een aanvraag voor een lening", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                break;
+            case AanvraagSoort.DOORLOPEND_KREDIET:
+                if (afsprakenKlant.contains(AanvraagSoort.DOORLOPEND_KREDIET) || afsprakenKlant.contains(AanvraagSoort.PERSOONLIJKE_LENING)) {
+                    Toast.makeText(this, "U heeft al een aanvraag voor een lening", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                break;
+
+        }
+        return false;
+    }
+
 }
 
 
