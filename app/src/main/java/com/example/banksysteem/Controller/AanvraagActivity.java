@@ -15,6 +15,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.banksysteem.Data.DatabaseConnector;
+import com.example.banksysteem.Model.Afspraak;
+import com.example.banksysteem.Model.Rekening;
 import com.example.banksysteem.R;
 import com.example.banksysteem.Util.AanvraagSoort;
 
@@ -37,11 +39,15 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
     private AfspraakRegistreerFragment afspraakRegistreerFragment = new AfspraakRegistreerFragment();
     private ArrayList<String> afspraakTijden = new ArrayList<>();
     private String afspraaksoort;
+    private ArrayList<Rekening> rekeningenKlant;
+    private ArrayList<Afspraak> afsprakenKlant;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.aanvraag_activity);
+
 
         //Lijst met producten waar de klant een aanvraag voor kan doen
         producten = new ArrayList<>();
@@ -110,6 +116,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
+        datepicker.getDatePicker().setMinDate(calendar.getTimeInMillis());
 
         //show datepicker if user selects edittext datum
         etDatepicker.setOnClickListener(new View.OnClickListener() {
@@ -130,14 +137,29 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
             public void onClick(View view) {
 
                 //check of de gebruiker een keuze heeft gemaakt voor een soort product
-                if (afspraaksoort == null){
+                if (afspraaksoort == null) {
                     Toast.makeText(getApplicationContext(), "Maak een keuze", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), afspraaksoort, Toast.LENGTH_SHORT).show();
                 }
-                //check of de klant al een lening heeft
 
-                //check of er al een aanvraag open staat
+                ArrayList<Rekening> rekeningen = haalRekeningenKlantOp();
+
+                //check of de klant al een lening heeft
+                if (afspraaksoort.equals(AanvraagSoort.DOORLOPEND_KREDIET) || afspraaksoort.equals(AanvraagSoort.PERSOONLIJKE_LENING)) {
+                    checkKlantLening(rekeningen);
+                }
+                //check of de klant schuld heeft
+                checkKlantSchuld(rekeningen);
+
+                ArrayList<Afspraak> afspraken = haalAfsprakenKlantOp();
+                Log.d("AanvraagAfspraak", "afspraken klant vanaf vandaag: " + afspraken);
+                //check of de klant al aanvragen heeft
+                //Als klant al een aanvraag voor een lening of doorlopend krediet heeft dan mag deze
+                //geen aanvraag doen
+
+                //Als de klant al een aanvraag heeft voor aangeklikte soort dan mag deze daar geen aanvraag voor doen
+                //maar wel voor ander soort (tenzij lening)
 
                 //voeg afspraak toe aan database
 
@@ -221,5 +243,137 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+    }
+
+    //TODO: geef klantid van ingelogde klant mee
+    private ArrayList<Rekening> haalRekeningenKlantOp() {
+
+
+        String sql = "SELECT * FROM KlantRekening JOIN Rekening ON " +
+                "KlantRekening.RekeningRekeningnummer = Rekening.Rekeningnummer " +
+                "WHERE KlantklantID = '217740078'";
+
+        try {
+            DatabaseConnector db = new DatabaseConnector();
+            db.execute(sql);
+            Object oResult = db.get();
+
+            String strResult = oResult.toString();
+            String strResultReplace = strResult.replace("\"", "");
+            Log.d("Aanvraag", "strResult: " + strResultReplace);
+
+            if (strResultReplace.equals("msg:select:empty")) {
+                Toast.makeText(this, "Er is iets misgegaan", Toast.LENGTH_SHORT).show();
+
+            } else {
+
+                Log.d("Aanvraag", "strResultRekeningen: " + strResult);
+
+                rekeningenKlant = new ArrayList<>();
+                JSONArray jsonArray = new JSONArray(strResult);
+
+
+                for (int teller = 0; teller < jsonArray.length(); teller++) {
+                    JSONObject jsonObject = (JSONObject) jsonArray.get(teller);
+
+                    String rekeningsoort = jsonObject.getString("RekeningsoortSoort");
+                    String rekeningnummer = jsonObject.getString("Rekeningnummer");
+                    Double rente = jsonObject.getDouble("Rente");
+                    Double saldo = jsonObject.getDouble("Saldo");
+
+                    Rekening rekening = new Rekening(rekeningnummer, rekeningsoort, rente, saldo);
+                    rekeningenKlant.add(rekening);
+
+                    Log.d("Aanvraag", "opgehaalde json: " + rekening.getRekeningSoort());
+                }
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return rekeningenKlant;
+    }
+
+    private void checkKlantLening(ArrayList<Rekening> rekeningenKlant) {
+
+
+        for (Rekening rek : rekeningenKlant) {
+            if (rek.getRekeningSoort().contains(AanvraagSoort.DOORLOPEND_KREDIET) || rek.getRekeningSoort().contains(AanvraagSoort.PERSOONLIJKE_LENING)) {
+                Toast.makeText(this, "U heeft al een lening", Toast.LENGTH_SHORT).show();
+
+            } else {
+                Toast.makeText(this, "Alles oke", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void checkKlantSchuld(ArrayList<Rekening> rekeningenKlant) {
+
+
+        for (Rekening rek : rekeningenKlant) {
+            if (Double.toString(rek.getSaldo()).contains("-")) {
+                Toast.makeText(this, "U heeft schulden", Toast.LENGTH_SHORT).show();
+
+            } else {
+                Toast.makeText(this, "U heeft geen schulden", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+    private ArrayList<Afspraak> haalAfsprakenKlantOp() {
+
+        //haal alle afspraken van een klant op uit de database
+        String sql = "SELECT * FROM Afspraak WHERE KlantklantID = '217740078'";
+
+        try {
+
+            DatabaseConnector db = new DatabaseConnector();
+            db.execute(sql);
+            Object oResult = db.get();
+
+            String strResult = oResult.toString();
+            String strResultReplace = strResult.replace("\"", "");
+            Log.d("AanvraagAfspraken", "strResult: " + strResultReplace);
+
+            if (strResultReplace.equals("msg:select:empty")) {
+                Toast.makeText(this, "Er is iets misgegaan", Toast.LENGTH_SHORT).show();
+
+            } else {
+
+                Log.d("AanvraagAfspraken", "strResultAfsrpaken: " + strResult);
+
+                afsprakenKlant = new ArrayList<>();
+                JSONArray jsonArray = new JSONArray(strResult);
+
+                for (int teller = 0; teller < jsonArray.length(); teller++) {
+                    JSONObject jsonObject = (JSONObject) jsonArray.get(teller);
+
+                    Date date = dateFormat.parse(jsonObject.getString("Datum"));
+                    String tijd = jsonObject.getString("Tijd");
+                    String afspraaksoort = jsonObject.getString("Soort");
+
+                    if (!date.before(new Date())) {
+                        String datum = dateFormat.format(date);
+
+                        Afspraak afspraak = new Afspraak(datum, tijd, afspraaksoort);
+                        afsprakenKlant.add(afspraak);
+
+                    }
+
+                    Log.d("AanvraagAfspraken", "opgehaalde json: " + afsprakenKlant);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return afsprakenKlant;
     }
 }
+
+

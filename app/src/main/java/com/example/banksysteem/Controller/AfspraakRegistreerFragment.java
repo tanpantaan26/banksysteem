@@ -107,6 +107,7 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
+        datepicker.getDatePicker().setMinDate(calendar.getTimeInMillis());
 
         //show datepicker if user selects edittext datum
         etDatepicker.setOnClickListener(new View.OnClickListener() {

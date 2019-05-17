@@ -17,6 +17,12 @@ public class Afspraak {
         this.afspraakSoort = afspraakSoort;
     }
 
+    public Afspraak(String datum, String tijd, String afspraakSoort) {
+        this.datum = datum;
+        this.tijd = tijd;
+        this.afspraakSoort = afspraakSoort;
+    }
+
     public String getKlantId() {
         return klantId;
     }
