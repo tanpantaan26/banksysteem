@@ -1,6 +1,9 @@
 package com.example.banksysteem.Controller;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -29,12 +32,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Deze klasse zorgt ervoor dat de klant een aanvraag kan doen om een nieuwe rekening of lening te openen.
+ *
+ * @author Inge
+ * @version 1
+ * @see AanvraagSoort
+ */
 public class AanvraagActivity extends AppCompatActivity implements DatePicker.OnDateChangedListener {
 
-    private ArrayList<String> producten;
     private Spinner spinnerTijden;
     private EditText etDatepicker;
-    private Calendar calendar;
     private DatePickerDialog datepicker;
     private AfspraakRegistreerFragment afspraakRegistreerFragment = new AfspraakRegistreerFragment();
     private ArrayList<String> afspraakTijden = new ArrayList<>();
@@ -50,7 +58,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
 
 
         //Lijst met producten waar de klant een aanvraag voor kan doen
-        producten = new ArrayList<>();
+        ArrayList<String> producten = new ArrayList<>();
         producten.add(AanvraagSoort.BETAALREKENING);
         producten.add(AanvraagSoort.SPAARREKENING);
         producten.add(AanvraagSoort.DEPOSITO);
@@ -83,7 +91,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
         spinnerTijden = findViewById(R.id.afsrpaakfragment_spinnerTijden);
 
         ///////////////////////////datepicker///////////////////////////////////
-        calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         //set date listener on datepickerdialog to get the date the user selected
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -144,27 +152,52 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
 
                 //check of de gebruiker een keuze heeft gemaakt voor een soort product
                 if (afspraaksoort == null) {
-                    Toast.makeText(getApplicationContext(), "Maak een keuze", Toast.LENGTH_SHORT).show();
+                    AlertDialog("Kies het product waar u een aanvraag voor wilt doen");
                 } else if (checkKlantLening(rekeningen)) {
-                    Toast.makeText(getApplicationContext(), "U heeft al een lening", Toast.LENGTH_SHORT).show();
+                    AlertDialog("U heeft al een lening");
                 } else if (checkKlantSchuld(rekeningen)) {
-                    Toast.makeText(getApplicationContext(), "U heeft schuld", Toast.LENGTH_SHORT).show();
+                    AlertDialog("U kunt geen aanvraag doen omdat u schuld heeft");
                 } else if (checkAanvragen(afspraken)) {
-                    Toast.makeText(getApplicationContext(), "U heeft hier al een aanvraag voor", Toast.LENGTH_SHORT).show();
+                    AlertDialog("U heeft al een aanvraag voor een " + afspraaksoort);
                 } else {
                     Log.d("AanvraagActivity", "else aangeroepen");
                     //voeg afspraak toe aan database
                     Afspraak afspraak = new Afspraak("217740078", etDatepicker.getText().toString(), spinnerTijden.getSelectedItem().toString(),
                             afspraaksoort);
                     Log.d("AanvraagActivity", "Nieuwe afspraak: " + afspraak.getDatum() + afspraak.getTijd() + afspraak.getAfspraakSoort());
-                    afspraakRegistreerFragment.insertAfspraak(afspraak);
 
+                    if (afspraakRegistreerFragment.insertAfspraak(afspraak)) {
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(getApplicationContext(), R.style.AlertDialogTheme);
+                        builder1.setMessage("Uw aanvraag is verzonden");
+
+                        builder1.setPositiveButton(
+                                "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        Intent intent = new Intent(getApplicationContext(), MeerFragment.class);
+                                        startActivity(intent);
+
+                                    }
+                                });
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
+                    } else {
+                        AlertDialog("Er is iets misgegaan");
+                    }
                 }
             }
         });
-
     }
 
+    /**
+     * Deze methode zorgt ervoor dat iedere keer als de gebruiker een nieuwe datum in de datepicker heeft
+     * gekozen, er in de database gecontroleerd wordt welke tijden niet meer beschikbaar zijn voor die datum.
+     *
+     * @param datePicker De datepicker waar de gebruiker een datum uit kiest.
+     * @param i
+     * @param i1
+     * @param i2
+     */
     @Override
     public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
         Log.d("Afspraak", "Ondatechanged aangeroepen");
@@ -185,7 +218,6 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
             maand = String.valueOf((datePicker.getMonth() + 1));
         }
         String datum = datePicker.getDayOfMonth() + "-" + maand + "-" + datePicker.getYear();
-
 
         afspraakRegistreerFragment.vulArrayList(afspraakTijden);
         final String sql = "SELECT * FROM Afspraak WHERE datum = \"" + datum + "\"";
@@ -230,20 +262,22 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, afspraakTijden);
                     spinnerTijden.setAdapter(adapter);
                 } else {
-                    Toast.makeText(this, "Er zijn geen tijden beschikbaar op deze datum", Toast.LENGTH_SHORT).show();
+                    AlertDialog("Er zijn geen tijden meer beschikbaar voor deze datum");
                 }
-
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     //TODO: geef klantid van ingelogde klant mee
+
+    /**
+     * Deze methode haalt de rekeningen van de ingelogde klant op om controles mee uit te voeren voor
+     * een aanvraag gedaan kan worden in de methodes checkKlantLening() en checkKlantSchuld().
+     *
+     * @return Arraylist met de rekeningen van de klant.
+     */
     private ArrayList<Rekening> haalRekeningenKlantOp() {
 
         Log.d("Aanvraag", "HaalRekeningenKlantOp aangeroepen");
@@ -294,21 +328,34 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
         return rekeningenKlant;
     }
 
+    /**
+     * Deze methode controleert of de ingelogde klant al een lening heeft.
+     *
+     * @param rekeningenKlant De lijst met rekeningen van de ingelogde klant.
+     * @return true als de klant al een lening heeft, false als dit niet zo is.
+     */
     private boolean checkKlantLening(ArrayList<Rekening> rekeningenKlant) {
 
         Log.d("Aanvraag", "CheckKlantLening aangeroepen");
-        for (Rekening rek : rekeningenKlant) {
-            if (rek.getRekeningSoort().contains(AanvraagSoort.DOORLOPEND_KREDIET) || rek.getRekeningSoort().contains(AanvraagSoort.PERSOONLIJKE_LENING)) {
-                return true;
+        if (afspraaksoort.equals(AanvraagSoort.PERSOONLIJKE_LENING) || afspraaksoort.equals(AanvraagSoort.DOORLOPEND_KREDIET)) {
+            for (Rekening rek : rekeningenKlant) {
+                if (rek.getRekeningSoort().contains(AanvraagSoort.DOORLOPEND_KREDIET) || rek.getRekeningSoort().contains(AanvraagSoort.PERSOONLIJKE_LENING)) {
+                    return true;
 
-            } else {
-                Toast.makeText(this, "Alles oke", Toast.LENGTH_SHORT).show();
-                return false;
+                } else {
+                    return false;
+                }
             }
         }
         return false;
     }
 
+    /**
+     * Deze methode controleert of een klant schuld heeft.
+     *
+     * @param rekeningenKlant De lijst met rekeningen van de ingelogde klant
+     * @return true als de klant schuld heeft, false als dit niet zo is.
+     */
     private boolean checkKlantSchuld(ArrayList<Rekening> rekeningenKlant) {
 
         Log.d("Aanvraag", "CheckKlantSchuld aangeroepen");
@@ -317,7 +364,6 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
                 return true;
 
             } else {
-                Toast.makeText(this, "U heeft geen schulden", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -325,6 +371,12 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
 
     }
 
+    /**
+     * Deze methode haalt alle afspraken van de klant op en filtert de afspraken uit het verleden uit de lijst.
+     * Op de overgebleven afspraken wordt controle uitgevoerd in checkAanvragen() voordat de klant een aanvraag mag doen.
+     *
+     * @return ArrayList met afspraken die vanaf vandaag en in de toekomst liggen.
+     */
     private ArrayList<String> haalAfsprakenKlantOp() {
         Log.d("Aanvraag", "HaalAfsprakenKlantOp aangeroepen");
         //haal alle afspraken van een klant op uit de database
@@ -341,7 +393,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
             Log.d("AanvraagAfspraken", "strResult: " + strResultReplace);
 
             if (strResultReplace.equals("msg:select:empty")) {
-                Toast.makeText(this, "Er zijn nog geen afspraken", Toast.LENGTH_SHORT).show();
+                Log.d("HaalAfspraken op", "Er zijn nog geen afspraken");
                 afsprakenKlant = new ArrayList<>();
 
             } else {
@@ -360,7 +412,6 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
 
                     if (!date.before(new Date())) {
 
-
                         afsprakenKlant.add(afspraaksoort);
 
                     }
@@ -375,6 +426,12 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
         return afsprakenKlant;
     }
 
+    /**
+     * Deze methode checkt welke aanvragen de klant al heeft lopen. De klant mag per soort maar 1 afspraak hebben.
+     *
+     * @param afsprakenKlant De lijst met afspraken van de ingelogde klant.
+     * @return true als de klant voor de geselecteerde soort rekening/lening al een afspraak heeft, false als dit niet zo is.
+     */
     private boolean checkAanvragen(ArrayList<String> afsprakenKlant) {
 
         Log.d("Aanvraag", "CheckAanvragen aangeroepen");
@@ -386,37 +443,54 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
         switch (afspraaksoort) {
             case AanvraagSoort.BETAALREKENING:
                 if (afsprakenKlant.contains(AanvraagSoort.BETAALREKENING)) {
-                    Toast.makeText(this, "U heeft al een aanvraag voor een betaalrekening", Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 break;
             case AanvraagSoort.SPAARREKENING:
                 if (afsprakenKlant.contains(AanvraagSoort.SPAARREKENING)) {
-                    Toast.makeText(this, "U heeft al een aanvraag voor een spaarrekening", Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 break;
             case AanvraagSoort.DEPOSITO:
                 if (afsprakenKlant.contains(AanvraagSoort.DEPOSITO)) {
-                    Toast.makeText(this, "U heeft al een aanvraag voor een deposito", Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 break;
             case AanvraagSoort.PERSOONLIJKE_LENING:
                 if (afsprakenKlant.contains(AanvraagSoort.PERSOONLIJKE_LENING) || afsprakenKlant.contains(AanvraagSoort.DOORLOPEND_KREDIET)) {
-                    Toast.makeText(this, "U heeft al een aanvraag voor een lening", Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 break;
             case AanvraagSoort.DOORLOPEND_KREDIET:
                 if (afsprakenKlant.contains(AanvraagSoort.DOORLOPEND_KREDIET) || afsprakenKlant.contains(AanvraagSoort.PERSOONLIJKE_LENING)) {
-                    Toast.makeText(this, "U heeft al een aanvraag voor een lening", Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 break;
 
         }
         return false;
+    }
+
+    /**
+     * Deze methode zorgt voor het maken van een AlertDialog
+     *
+     * @param message De tekst die in de AlertDialog weergegeven moet worden.
+     */
+    private void AlertDialog(String message) {
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this, R.style.AlertDialogTheme);
+        builder1.setMessage(message);
+
+        builder1.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+
+                    }
+                });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 
 }

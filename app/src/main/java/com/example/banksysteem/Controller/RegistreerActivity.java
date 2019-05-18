@@ -10,7 +10,11 @@ import android.widget.ImageButton;
 import com.example.banksysteem.R;
 
 /**
+ * Deze klasse is de container voor de fragments van het registreren.
  * @author Inge
+ * @version 1
+ * @see GegevensRegistreerFragment
+ * @see AfspraakRegistreerFragment
  */
 public class RegistreerActivity extends AppCompatActivity {
 

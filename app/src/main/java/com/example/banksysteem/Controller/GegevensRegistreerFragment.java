@@ -1,7 +1,6 @@
 package com.example.banksysteem.Controller;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,13 +24,19 @@ import com.example.banksysteem.R;
 import com.example.banksysteem.Util.ValidateAanvraagInput;
 
 /**
+ * Klasse waarin de gebruiker zijn gegevens voor een registratie in kan vullen. Deze gegevens worden
+ * vervolgens gecontroleerd en als alles goed is dan wordt de gebruiker doorgestuurd naar het scherm
+ * om een afspraak te maken bij de bank om nieuwe klant te worden.
+ *
  * @author Inge
+ * @version 1
+ * @see AfspraakRegistreerFragment
+ * @see ValidateAanvraagInput
  */
 public class GegevensRegistreerFragment extends Fragment {
 
     private EditText etVoornaam, etAchternaam, etAdres, etMail, etTelefoon,
             etBSN_KVK, etBedrijfsnaam;
-    private DatabaseConnector db = new DatabaseConnector();
     private RadioButton particulierRb, bedrijfRb;
     private ValidateAanvraagInput valAvInput = new ValidateAanvraagInput();
 
@@ -54,12 +59,12 @@ public class GegevensRegistreerFragment extends Fragment {
         etBSN_KVK = view.findViewById(R.id.gegevens_registreer_etBSN_KVK);
         etBedrijfsnaam = view.findViewById(R.id.gegevens_registreer_etBedrijfsnaam);
 
-
+        //radiobuttons ophalen
         particulierRb = view.findViewById(R.id.gegevens_registreer_rbParticulier);
         bedrijfRb = view.findViewById(R.id.gegevens_registreer_rbBedrijf);
         final RadioGroup radioGroup = view.findViewById(R.id.gegevens_registreer_radiogroup);
 
-        //Check welke radiobutton is geselecteerd en plaats de juiste hint teksten en kvk/bsn
+        //Check welke radiobutton is geselecteerd en plaats de juiste hint teksten en tekstvelden
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -67,7 +72,6 @@ public class GegevensRegistreerFragment extends Fragment {
 
                     etBedrijfsnaam.setVisibility(View.INVISIBLE);
 
-                    etBSN_KVK.setText("792481689");
                     etAdres.setHint("Adres");
                     etTelefoon.setHint("Telefoonnummer");
                     etMail.setHint("Email");
@@ -98,7 +102,7 @@ public class GegevensRegistreerFragment extends Fragment {
                 //check of de gebruiker een keuze heeft gemaakt tussen particulier en bedrijf,
                 // zo niet geef dan een melding
                 if (radioGroup.getCheckedRadioButtonId() == -1) {
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext(), R.style.AlertDialogTheme);
                     builder1.setMessage("Maak een keuze voor particulier of bedrijf");
 
                     builder1.setPositiveButton(
@@ -114,14 +118,14 @@ public class GegevensRegistreerFragment extends Fragment {
 
 
                 } else if (!valAvInput.emptyEdittext((ViewGroup) view.findViewById(R.id.gegevens_viewgroup))) {
-                    Toast.makeText(getContext(), "Vul alle velden in", Toast.LENGTH_LONG).show();
+
                 } else if (!valAvInput.checkEmail(etMail.getText().toString())) {
-                    etMail.setError("Vul een geldige mail in");
+                    etMail.setError("Vul een geldige email in");
                 } else if (!valAvInput.validateLetters(etVoornaam.getText().toString())) {
                     etVoornaam.setError("Voornaam mag alleen letters bevatten");
                 } else if (!valAvInput.validateLetters(etAchternaam.getText().toString())) {
                     etAchternaam.setError("Achternaam mag alleen letters bevatten");
-                } else if (!checkKvkBsn(etBSN_KVK.getText().toString())) {
+                } else if (!valAvInput.checkKvkBsn(etBSN_KVK.getText().toString(), particulierRb, bedrijfRb)) {
                     if (particulierRb.isChecked()) {
                         etBSN_KVK.setError("Vul een geldige bsn in");
 
@@ -130,7 +134,7 @@ public class GegevensRegistreerFragment extends Fragment {
                         etBSN_KVK.setError("Kvk moet 8 tekens lang zijn");
 
                     }
-                }else if (!isAlKlant(etBSN_KVK.getText().toString())) {
+                } else if (!isAlKlant(etBSN_KVK.getText().toString())) {
 
                 } else {
 
@@ -153,8 +157,8 @@ public class GegevensRegistreerFragment extends Fragment {
 
                     String sql = "SELECT * FROM ZwarteLijst WHERE KlantklantID = '" + klantId + "';";
                     try {
-                        DatabaseConnector db2 = new DatabaseConnector();
-                        db2.execute(sql);
+                        DatabaseConnector db = new DatabaseConnector();
+                        db.execute(sql);
                         Object oResult = db.get();
 
                         String strResult = oResult.toString();
@@ -171,20 +175,7 @@ public class GegevensRegistreerFragment extends Fragment {
                             fragmentManager.beginTransaction().replace(R.id.registreeractivity_fragment_container, afspraakFragment).commit();
 
                         } else {
-                            AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
-                            builder1.setMessage("U bent afgewezen om klant te worden bij deze bank");
-
-                            builder1.setPositiveButton(
-                                    "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            Intent intent = new Intent(getContext(), LoginActivity.class);
-                                            startActivity(intent);
-
-                                        }
-                                    });
-                            AlertDialog alert11 = builder1.create();
-                            alert11.show();
+                            AlertDialog("U bent afgewezen om klant te worden bij de bank");
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -197,24 +188,16 @@ public class GegevensRegistreerFragment extends Fragment {
         });
     }
 
-    //check of bsn voldoet aan 11 proef en of kvk niet langer is dan 8 tekens
-    private boolean checkKvkBsn(String kvk_bsn) {
 
-        if (particulierRb.isChecked()) {
-            int bsn = Integer.parseInt(kvk_bsn);
-            if (!valAvInput.isValidBSN(bsn)) {
-                return false;
-            }
-        }
-        if (bedrijfRb.isChecked()) {
-            if (kvk_bsn.length() != 8) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-
+    /**
+     * Deze methode checkt of de klant al bestaat in de database. Als de klant al bestaat hoeft deze niet
+     * nog een keer te registreren.
+     *
+     * @param klantId De bsn of kvk nummer die bij de registratie gegevens ingevuld wordt. Dit is namelijk de
+     *                primary key in de tabel klant.
+     * @return boolean true of false. Als de klant nog niet bestaat in de database, dan is de return waarde true en
+     * als de klant al wel bestaat false.
+     */
     private boolean isAlKlant(String klantId) {
 
 
@@ -222,7 +205,7 @@ public class GegevensRegistreerFragment extends Fragment {
         String strResult = "";
 
         try {
-
+            DatabaseConnector db = new DatabaseConnector();
             db.execute(sql);
             Object oResult = db.get();
 
@@ -239,11 +222,35 @@ public class GegevensRegistreerFragment extends Fragment {
         if (strResult.equals("msg:select:empty")) {
             return true;
         } else {
-            Toast.makeText(getContext(), "U bent al bekend bij de bank", Toast.LENGTH_LONG).show();
+            AlertDialog("U bent al bekend bij de bank");
             return false;
         }
 
 
+    }
+
+    /**
+     * Deze methode zorgt voor het maken van een AlertDialog die ervoor zorgt dat de klant teruggestuurd wordt
+     * naar het login scherm als de klant geen registratie mag doen.
+     *
+     * @param message De tekst die in de AlertDialog weergegeven moet worden.
+     */
+    private void AlertDialog(String message) {
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder1.setMessage(message);
+
+        builder1.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                        startActivity(intent);
+
+                    }
+                });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 
 }

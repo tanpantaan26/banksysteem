@@ -1,6 +1,9 @@
 package com.example.banksysteem.Controller;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,7 +35,14 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
+ * Deze klasse zorgt ervoor dat een gebruiker die wil registreren een afspraak kan maken bij de bank. De
+ * gegevens van de gebruiker worden bij het versturen van de aanvraag opgeslagen in de database tabel 'klant' en de
+ * afspraak in de tabel 'Afspraak'. De gegevens worden doorgestuurd vanuit het registreer scherm waar de gebruiker zijn
+ * gegevens in heeft gevuld.
+ *
  * @author Inge
+ * @version 1
+ * @see GegevensRegistreerFragment
  */
 
 public class AfspraakRegistreerFragment extends Fragment implements DatePicker.OnDateChangedListener {
@@ -40,8 +50,6 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
     private EditText etDatepicker;
     private Calendar calendar;
     private Klant klant;
-    private DatabaseConnector db = new DatabaseConnector();
-    private String gekozenDatum;
     private DatePickerDialog datepicker;
     private Spinner spinnerTijden;
     private ArrayList<String> afspraakTijden;
@@ -60,16 +68,14 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
-        //arraylist met beschikbare tijden
+        //vul arraylist met beschikbare tijden
         afspraakTijden = new ArrayList<>();
-        //vulArrayList(afspraakTijden);
+        vulArrayList(afspraakTijden);
 
-
+        //zet de datum van vandaag in het tekstvak voor datum
         etDatepicker = view.findViewById(R.id.afspraakfragment_etDatum);
         final String datumVandaag = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         etDatepicker.setText(datumVandaag);
-
 
         spinnerTijden = view.findViewById(R.id.afsrpaakfragment_spinnerTijden);
 
@@ -82,23 +88,21 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
 
                 String dag = "";
 
-                if (dayOfMonth < 10){
+                if (dayOfMonth < 10) {
                     dag = "0" + dayOfMonth;
-                }else {
+                } else {
                     dag = String.valueOf(dayOfMonth);
                 }
 
                 String maand = "";
 
-                if (monthOfYear +1 < 10){
+                if (monthOfYear + 1 < 10) {
                     maand = "0" + (monthOfYear + 1);
-                }else {
+                } else {
                     maand = String.valueOf((monthOfYear + 1));
                 }
                 String datum = dag + "-" + maand + "-" + year;
 
-
-                //gekozenDatum = dayOfMonth + "-" + (monthOfYear + 1 < 10 ? ("0" + (monthOfYear + 1)) : monthOfYear + 1) + "-" + year;
                 etDatepicker.setText(datum);
             }
         };
@@ -114,9 +118,7 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
             @Override
             public void onClick(View view) {
 
-
                 datepicker.show();
-
 
             }
         });
@@ -134,15 +136,35 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
 
                 Log.d("Afspraak", "Afspraak gegevens: " + afspraak.getDatum() + afspraak.getTijd() + afspraak.getKlantId());
 
-                insertKlant(klant);
-                insertAfspraak(afspraak);
+                if (insertKlant(klant) || insertAfspraak(afspraak)) {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+                    builder1.setMessage("Uw aanvraag is verstuurd");
+
+                    builder1.setPositiveButton(
+                            "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Intent intent = new Intent(getContext(), LoginActivity.class);
+                                    startActivity(intent);
+
+                                }
+                            });
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                } else {
+                    AlertDialog("Er is iets misgegaan");
+                }
             }
         });
-
-
     }
 
-    private void insertKlant(Klant k) {
+    /**
+     * Deze methode zorgt voor het invoeren van een klant in de database
+     *
+     * @param k Object klant met gegevens van de gebruiker die wil registreren. Deze gegevens komen van GegevensRegistreerFragment.
+     * @return true or false. Als de klant met succes is ingevoerd in de database dan geeft de methode true terug, anders false.
+     */
+    private boolean insertKlant(Klant k) {
 
         String sql = "INSERT INTO Klant(klantID, Voornaam, Achternaam, Telefoon, Email, Adres, Bedrijfsnaam, isGoedgekeurd) " +
                 "VALUES('" + k.getKlantId() + "','" + k.getVoornaam() + "','" + k.getAchternaam()
@@ -160,9 +182,9 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
             Log.d("AfspraakFr:insertKlant", "strResult: " + strResult);
 
             if (strResult.equals("msg:insert:succes")) {
-                Toast.makeText(getContext(), "Klant succesvol toegevoegd", Toast.LENGTH_SHORT).show();
+                return true;
             } else {
-                Toast.makeText(getContext(), "Er is iets misgegaan", Toast.LENGTH_SHORT).show();
+                return false;
             }
 
 
@@ -170,10 +192,16 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
             Log.d("Afspraak", "Er is iets misgegaan");
             e.printStackTrace();
         }
-
+        return true;
     }
 
-    public void insertAfspraak(Afspraak af) {
+    /**
+     * Deze methode zorgt voor het invoeren van een afspraak in de database
+     *
+     * @param af De afspraakgegevens die de gebruiker gekozen heeft
+     * @return true or false. Als de afspraak met succes is ingevoerd in de database dan geeft de methode true terug, anders false.
+     */
+    public boolean insertAfspraak(Afspraak af) {
 
         String sql = "INSERT INTO Afspraak VALUES('" + af.getDatum() + "','" + af.getTijd() + "','" + af.getKlantId() + "','" + af.getAfspraakSoort() + "');";
 
@@ -188,41 +216,47 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
             Log.d("Afspraak:insertAfsrpaak", "strResult: " + strResult);
 
             if (strResult.equals("msg:insert:succes")) {
-                Toast.makeText(getContext(), "Afspraak succesvol toegevoegd", Toast.LENGTH_SHORT).show();
+                return true;
             } else {
-                Toast.makeText(getContext(), "Er is iets misgegaan", Toast.LENGTH_SHORT).show();
+                return false;
             }
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return true;
     }
 
-
-
+    /**
+     * Deze methode zorgt ervoor dat iedere keer als de gebruiker een nieuwe datum in de datepicker heeft
+     * gekozen, er in de database gecontroleerd wordt welke tijden niet meer beschikbaar zijn voor die datum.
+     *
+     * @param datePicker De datepicker waar de gebruiker een datum uit kiest.
+     * @param i
+     * @param i1
+     * @param i2
+     */
     @Override
     public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
         Log.d("Afspraak", "Ondatechanged aangeroepen");
 
         String dag = "";
 
-        if (datePicker.getDayOfMonth() < 10){
+        if (datePicker.getDayOfMonth() < 10) {
             dag = "0" + datePicker.getDayOfMonth();
-        }else {
+        } else {
             dag = String.valueOf(datePicker.getDayOfMonth());
         }
 
         String maand = "";
 
-        if (datePicker.getMonth() +1 < 10){
+        if (datePicker.getMonth() + 1 < 10) {
             maand = "0" + (datePicker.getMonth() + 1);
-        }else {
+        } else {
             maand = String.valueOf((datePicker.getMonth() + 1));
         }
         String datum = datePicker.getDayOfMonth() + "-" + maand + "-" + datePicker.getYear();
-
 
 
         vulArrayList(afspraakTijden);
@@ -259,7 +293,7 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
                 }
 
                 Log.d("Afspraak", "Tijdenbezet" + tijdenBezet);
-                //vergelijk met afsrpaaktijden en verwijder in afsrpaaktijden de tijden uit de database
+                //vergelijk met afspraaktijden en verwijder in afspraaktijden de tijden uit de database
                 afspraakTijden.removeAll(tijdenBezet);
                 Log.d("Afspraak", "Tijden beschikbaar" + afspraakTijden);
 
@@ -268,18 +302,19 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, afspraakTijden);
                     spinnerTijden.setAdapter(adapter);
                 } else {
-                    Toast.makeText(getContext(), "Er zijn geen tijden beschikbaar op deze datum", Toast.LENGTH_SHORT).show();
+                    AlertDialog("Er zijn geen tijden meer beschikbaar voor deze datum");
                 }
-
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
+    /**
+     * Deze methode zorgt voor het vullen van de Arraylist met alle beschikbare tijden voor afspraken op een dag
+     *
+     * @param arrayList Arraylist die gevuld moet worden met beschikbare tijden voor een afspraak
+     */
     public void vulArrayList(ArrayList<String> arrayList) {
 
         arrayList.clear();
@@ -291,6 +326,28 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
         arrayList.add("15:00");
         arrayList.add("16:00");
 
+    }
+
+    /**
+     * Deze methode zorgt voor het maken van een AlertDialog
+     *
+     * @param message De tekst die in de AlertDialog weergegeven moet worden.
+     */
+    private void AlertDialog(String message) {
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        builder1.setMessage(message);
+
+        builder1.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+
+                    }
+                });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
     }
 
 }

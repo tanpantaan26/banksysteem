@@ -13,4 +13,8 @@
         <item name="android:textColorSecondary">@color/inactiveColor</item>
     </style>
 
+    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+    </style>
+
 </resources>

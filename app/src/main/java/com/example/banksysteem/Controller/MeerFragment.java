@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import com.example.banksysteem.R;
 
 /**
+ * Deze klasse bevat een navigatie dmv cardviews
  * @author Inge
+ * @version 1
  */
 public class MeerFragment extends Fragment {
 

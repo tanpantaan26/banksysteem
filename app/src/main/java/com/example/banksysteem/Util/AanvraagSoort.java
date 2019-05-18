@@ -1,7 +1,10 @@
 package com.example.banksysteem.Util;
 
 /**
+ * Deze klasse bevat de producten waar een klant een aanvraag voor kan doen.
  * @author Inge
+ * @version 1
+ * @see com.example.banksysteem.Controller.AanvraagActivity
  */
 public class AanvraagSoort {
 

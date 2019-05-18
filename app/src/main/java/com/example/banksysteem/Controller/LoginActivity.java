@@ -14,7 +14,11 @@ import android.widget.TextView;
 import com.example.banksysteem.R;
 
 /**
+ * Deze klasse zorgt ervoor dat de klant kan inloggen of kan navigeren naar het registreerscherm of infoscherm
  * @author Inge
+ * @version 1
+ * @see InfoActivity
+ * @see RegistreerActivity
  */
 public class LoginActivity extends AppCompatActivity {
 
