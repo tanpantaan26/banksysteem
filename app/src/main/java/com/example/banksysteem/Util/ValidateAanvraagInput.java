@@ -115,4 +115,49 @@ public class ValidateAanvraagInput {
         return true;
     }
 
+    /**
+     * Deze methode controleert het ingevulde telefoonnummer
+     * @param telefoon Het telefoonnummer dat de gebruiker heeft ingevuld.
+     * @return true als het telefoonnummer goed is, false als dit niet zo is.
+     */
+    public boolean checkTelefoonnummer(String telefoon){
+
+        String regexMobiel = "^(((\\+31|0|0031)6){1}[1-9]{1}[0-9]{7})$";
+        String regexVast = "^(((0)[1-9]{2}[0-9][-]?[1-9][0-9]{5})|((\\+31|0|0031)[1-9][0-9][-]?[1-9][0-9]{6}))$";
+        Pattern pattern = Pattern.compile(regexMobiel);
+        Pattern pattern1 = Pattern.compile(regexVast);
+
+        return pattern.matcher(telefoon).matches() || pattern1.matcher(telefoon).matches();
+
+    }
+
+    /**
+     * Deze methode checkt of de input alleen letters en cijfers bevat.
+     * @param input De waarde die gecontroleerd moet worden.
+     * @return true als de waarde goed is, false als dit niet zo is.
+     */
+    public boolean checkAlphaNumeric(String input){
+
+        String regex = "^(?![0-9]*$)[a-zA-Z0-9\\s]+$";
+        Pattern pattern = Pattern.compile(regex);
+
+        return pattern.matcher(input).matches();
+
+    }
+
+    /**
+     * Deze methode checkt het ingevoerde adres. Het adres mag alleen letters en cijfers bevatten, niet alleen letters
+     * en ook niet alleen cijfers.
+     * @param input Het adres dat de gebruiker ingevoerd heeft.
+     * @return true als het adres goed ingevuld is, false als dit niet zo is.
+     */
+    public boolean checkAdres(String input){
+
+        String regex = "^[a-zA-Z](?![0-9]*$)(?![a-zA-Z]*$)[a-zA-Z0-9\\s]+$";
+        Pattern pattern = Pattern.compile(regex);
+
+        return pattern.matcher(input).matches();
+
+    }
+
 }

@@ -77,7 +77,7 @@ public class GegevensRegistreerFragment extends Fragment {
                     etMail.setHint("Email");
 
                     valAvInput.clearEdittext((ViewGroup) view.findViewById(R.id.gegevens_viewgroup));
-                    etBedrijfsnaam.setText("1");
+                    etBedrijfsnaam.setText("b1");
                 }
                 if (bedrijfRb.isChecked()) {
 
@@ -121,6 +121,12 @@ public class GegevensRegistreerFragment extends Fragment {
 
                 } else if (!valAvInput.checkEmail(etMail.getText().toString())) {
                     etMail.setError("Vul een geldige email in");
+                } else if (!valAvInput.checkAdres(etAdres.getText().toString())) {
+                    etAdres.setError("Vul een geldig adres in");
+                }else if (!valAvInput.checkAlphaNumeric(etBedrijfsnaam.getText().toString())) {
+                    etBedrijfsnaam.setError("Vul een geldige bedrijfsnaam in");
+                }else if (!valAvInput.checkTelefoonnummer(etTelefoon.getText().toString())) {
+                    etTelefoon.setError("Vul een geldig telefoonnummer in");
                 } else if (!valAvInput.validateLetters(etVoornaam.getText().toString())) {
                     etVoornaam.setError("Voornaam mag alleen letters bevatten");
                 } else if (!valAvInput.validateLetters(etAchternaam.getText().toString())) {
