@@ -11,7 +11,11 @@ import java.net.URL;
 
 
 public class DatabaseConnector extends AsyncTask {
-
+    /**
+     * Class: DatabaseConnector
+     * Author: Jeremy Vorrink
+     * Description: Class enables user to connect with our webservice to send request to the database
+     */
     private String host = "http://biginterest.vorrink.net";
 
     /*
@@ -150,6 +154,55 @@ public class DatabaseConnector extends AsyncTask {
         String strResult = result.toString().replace("\"", "");
         //System.out.println(strResult);
         if(strResult.equals("msg:securelogin:succes"))
+            return true;
+        else
+            return false;
+    }
+
+    public boolean requestRegisterKlant(String klantID, String Voornaam, String Achternaam, String Telefoon, String Email, String Adres, String Gebruikersnaam, String Wachtwoord, String Bedrijfsnaam, int isGoedgekeurd) throws IOException{
+        URL url = new URL(host);
+        HttpURLConnection client = (HttpURLConnection) url.openConnection();
+        client.setDoOutput(true);
+        client.setDoInput(true);
+        client.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+        client.setRequestMethod("POST");
+
+        client.connect();
+
+        JSONObject request = new JSONObject();
+
+        request.put("Request", "RegisterKlant");
+        request.put("klantID", klantID);
+        request.put("Voornaam", Voornaam);
+        request.put("Achternaam", Achternaam);
+        request.put("Telefoon", Telefoon);
+        request.put("Email", Email);
+        request.put("Adres", Adres);
+        request.put("Gebruikersnaam", Gebruikersnaam);
+        request.put("Wachtwoord", Wachtwoord);
+        request.put("Bedrijfsnaam", Bedrijfsnaam);
+        request.put("isGoedgekeurd", isGoedgekeurd);
+
+        OutputStreamWriter writer = new OutputStreamWriter(client.getOutputStream());
+        String output = request.toString();
+        writer.write(output);
+        writer.flush();
+        writer.close();
+
+        InputStream input = client.getInputStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+        StringBuilder result = new StringBuilder();
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            result.append(line);
+        }
+
+        client.disconnect();
+
+        String strResult = result.toString().replace("\"", "");
+        //System.out.println(strResult);
+        if(strResult.equals("msg:insert:succes:register_klant"))
             return true;
         else
             return false;
