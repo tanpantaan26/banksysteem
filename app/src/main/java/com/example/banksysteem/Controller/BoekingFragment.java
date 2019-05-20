@@ -19,11 +19,14 @@ import java.util.concurrent.ExecutionException;
 public class BoekingFragment extends Fragment {
     public Button verzend;
     public Double saldoZend;
+    public Double saldoOntvang;
+    public Double saldoUit;
     public DatabaseConnector dbz;
     public DatabaseConnector dbo;
     public DatabaseConnector dbv;
-    public Object oResult;
+    public DatabaseConnector dbs;
     public Object zResult;
+    public Object oResult;
     public String sql;
 
 
@@ -37,6 +40,13 @@ public class BoekingFragment extends Fragment {
         verzend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                
+                Editable saldoInput = getView().findViewById(R.id.saldoInput);
+                saldoUit = Double.valueOf(saldoInput.toString());
+
+                Editable ontvangerInput = getView().findViewById(R.id.saldoInput);
+                String ontvanger = ontvangerInput.toString();
+
                 dbz = new DatabaseConnector();
                 sql = "SELECT Saldo FROM Rekening WHERE Rekeningnummer = '2147483647'";
                 dbz.execute(sql);
@@ -49,8 +59,11 @@ public class BoekingFragment extends Fragment {
                 }
                 saldoZend = Double.valueOf(zResult.toString());
 
-                Editable ontvangerInput = getView().findViewById(R.id.saldoInput);
-                String ontvanger = ontvangerInput.toString();
+                Double saldoZendNieuw = saldoZend - saldoUit;
+                dbv = new DatabaseConnector();
+                sql = "UPATE Rekening SET Saldo = '"+saldoZendNieuw+"' WHERE Rekeningnummer = '2147483647'";
+                dbv.execute(sql);
+
 
                 dbo = new DatabaseConnector();
                 sql = "SELECT Saldo FROM Rekening WHERE Rekeningnummer = '"+ontvanger+"'";
@@ -62,34 +75,13 @@ public class BoekingFragment extends Fragment {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                int o1StrResult = Integer.parseInt(oResult.toString());
-                Editable saldoInput = getView().findViewById(R.id.saldoInput);
-                int saldoUit = Integer.parseInt(saldoInput.toString());
-                int saldoZend = o1StrResult + saldoUit;
-                dbv = new DatabaseConnector();
-                sql = "UPATE Rekening SET Saldo = '"+saldoZend+"' WHERE Rekeningnummer = '87676767'";
-                dbv.execute(sql);
+                saldoOntvang = Double.valueOf(oResult.toString());
 
-                ontvangerInput = getView().findViewById(R.id.ontvangerInput);
-                ontvanger = ontvangerInput.toString();
+                Double saldoOntvangNieuw = saldoOntvang + saldoUit;
+                dbs = new DatabaseConnector();
+                sql = "UPATE Rekening SET Saldo = '"+saldoOntvangNieuw+"' WHERE Rekeningnummer = '"+ontvanger+"'";
+                dbs.execute(sql);
 
-                dbo = new DatabaseConnector();
-                sql = "SELECT Saldo FROM Rekening WHERE Rekeningnummer = '"+ontvanger+"'";
-                dbo.execute(sql);
-                try {
-                    oResult = dbo.get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                o1StrResult = Integer.parseInt(oResult.toString());
-                saldoInput = getView().findViewById(R.id.saldoInput);
-                saldoUit = Integer.parseInt(saldoInput.toString());
-                saldoZend = o1StrResult + saldoUit;
-                dbv = new DatabaseConnector();
-                sql = "UPATE Rekening SET Saldo = '"+saldoZend+"' WHERE Rekeningnummer = '"+ontvanger+"'";
-                dbv.execute(sql);
                 Toast.makeText(getActivity().getApplicationContext(), "Verstuurd", Toast.LENGTH_LONG).show();
             }
         });
