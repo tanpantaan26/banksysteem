@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.banksysteem.Data.DatabaseConnector;
+<<<<<<< HEAD
 import com.example.banksysteem.Model.Afspraak;
 import com.example.banksysteem.R;
 
@@ -24,6 +25,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+=======
+import com.example.banksysteem.R;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
+>>>>>>> eccdff8f5054cfbefeabe6e0c403e80eaf0448ae
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -57,6 +65,20 @@ public class LoginActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
+                }
+
+                DatabaseConnector db = new DatabaseConnector();
+                try {
+                    String SQL = "Select * from Beheer";
+                    db.execute(SQL);
+                    Object oResult = db.get();
+                    System.out.println(oResult);
+                    Toast toast = Toast.makeText(getApplicationContext(), String.valueOf(oResult.toString()), Toast.LENGTH_LONG);
+                    toast.show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println(e);
                 }
             }
         });
