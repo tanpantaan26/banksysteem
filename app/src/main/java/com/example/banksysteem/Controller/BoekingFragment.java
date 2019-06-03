@@ -22,6 +22,10 @@ import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
+/**
+ *Auteur: Rutger van den Heuvel
+ */
+
 public class BoekingFragment extends Fragment {
     public Button verzend;
     public Double saldoZend;

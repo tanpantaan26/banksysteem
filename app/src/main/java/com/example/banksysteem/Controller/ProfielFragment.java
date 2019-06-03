@@ -31,6 +31,10 @@ public class ProfielFragment extends Fragment {
     DatabaseConnector dat;
     JSONArray jResult;
 
+    /**
+     *Auteur: Rutger van den Heuvel
+     */
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.profiel_fragment, container, false);
     }

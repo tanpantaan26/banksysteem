@@ -5,6 +5,10 @@ import android.os.Bundle;
 
 import com.example.banksysteem.R;
 
+/**
+ *Auteur: Rutger van den Heuvel
+ */
+
 public class InfoActivity extends AppCompatActivity {
 
     @Override
