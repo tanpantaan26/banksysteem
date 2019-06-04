@@ -136,7 +136,7 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
 
                 Log.d("Afspraak", "Afspraak gegevens: " + afspraak.getDatum() + afspraak.getTijd() + afspraak.getKlantId());
 
-                if (insertKlant(klant) || insertAfspraak(afspraak)) {
+                if (insertKlant(klant) && insertAfspraak(afspraak)) {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
                     builder1.setMessage("Uw aanvraag is verstuurd");
 
@@ -192,7 +192,7 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
             Log.d("Afspraak", "Er is iets misgegaan");
             e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     /**
@@ -203,6 +203,7 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
      */
     public boolean insertAfspraak(Afspraak af) {
 
+        Log.d("Afspraak", "InsertAfspraak aangeroepen");
         String sql = "INSERT INTO Afspraak VALUES('" + af.getDatum() + "','" + af.getTijd() + "','" + af.getKlantId() + "','" + af.getAfspraakSoort() + "');";
 
         try {
@@ -225,7 +226,7 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     /**
@@ -256,7 +257,7 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
         } else {
             maand = String.valueOf((datePicker.getMonth() + 1));
         }
-        String datum = datePicker.getDayOfMonth() + "-" + maand + "-" + datePicker.getYear();
+        String datum = dag + "-" + maand + "-" + datePicker.getYear();
 
 
         vulArrayList(afspraakTijden);

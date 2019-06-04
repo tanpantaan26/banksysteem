@@ -158,7 +158,12 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
                 } else if (checkKlantSchuld(rekeningen)) {
                     AlertDialog("U kunt geen aanvraag doen omdat u schuld heeft");
                 } else if (checkAanvragen(afspraken)) {
-                    AlertDialog("U heeft al een aanvraag voor een " + afspraaksoort);
+                    if (afspraaksoort.equals(AanvraagSoort.BETAALREKENING) || afspraaksoort.equals(AanvraagSoort.SPAARREKENING)
+                            || afspraaksoort.equals(AanvraagSoort.DEPOSITO)) {
+                        AlertDialog("U heeft al een aanvraag voor een " + afspraaksoort);
+                    } else {
+                        AlertDialog("U heeft al een aanvraag voor een lening");
+                    }
                 } else {
                     Log.d("AanvraagActivity", "else aangeroepen");
                     //voeg afspraak toe aan database
@@ -167,14 +172,14 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
                     Log.d("AanvraagActivity", "Nieuwe afspraak: " + afspraak.getDatum() + afspraak.getTijd() + afspraak.getAfspraakSoort());
 
                     if (afspraakRegistreerFragment.insertAfspraak(afspraak)) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(getApplicationContext(), R.style.AlertDialogTheme);
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext(), R.style.AlertDialogTheme);
                         builder1.setMessage("Uw aanvraag is verzonden");
 
                         builder1.setPositiveButton(
                                 "OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        Intent intent = new Intent(getApplicationContext(), MeerFragment.class);
+                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                         startActivity(intent);
 
                                     }
@@ -217,7 +222,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
         } else {
             maand = String.valueOf((datePicker.getMonth() + 1));
         }
-        String datum = datePicker.getDayOfMonth() + "-" + maand + "-" + datePicker.getYear();
+        String datum = dag + "-" + maand + "-" + datePicker.getYear();
 
         afspraakRegistreerFragment.vulArrayList(afspraakTijden);
         final String sql = "SELECT * FROM Afspraak WHERE datum = \"" + datum + "\"";
@@ -337,13 +342,11 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
     private boolean checkKlantLening(ArrayList<Rekening> rekeningenKlant) {
 
         Log.d("Aanvraag", "CheckKlantLening aangeroepen");
+        Log.d("Aanvraag", "afspraaksoort: " + afspraaksoort);
         if (afspraaksoort.equals(AanvraagSoort.PERSOONLIJKE_LENING) || afspraaksoort.equals(AanvraagSoort.DOORLOPEND_KREDIET)) {
             for (Rekening rek : rekeningenKlant) {
                 if (rek.getRekeningSoort().contains(AanvraagSoort.DOORLOPEND_KREDIET) || rek.getRekeningSoort().contains(AanvraagSoort.PERSOONLIJKE_LENING)) {
                     return true;
-
-                } else {
-                    return false;
                 }
             }
         }

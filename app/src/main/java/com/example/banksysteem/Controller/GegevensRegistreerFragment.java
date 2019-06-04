@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -75,6 +76,7 @@ public class GegevensRegistreerFragment extends Fragment {
                     etAdres.setHint("Adres");
                     etTelefoon.setHint("Telefoonnummer");
                     etMail.setHint("Email");
+                    etBSN_KVK.setHint("BSN");
 
                     valAvInput.clearEdittext((ViewGroup) view.findViewById(R.id.gegevens_viewgroup));
                     etBedrijfsnaam.setText("b1");
@@ -94,7 +96,7 @@ public class GegevensRegistreerFragment extends Fragment {
         });
 
         //button aanvraag versturen
-        Button btnAanvraagVersturen = view.findViewById(R.id.gegevens_registreer_btnVerstuurAanvraag);
+        ImageButton btnAanvraagVersturen = view.findViewById(R.id.gegevens_registreer_btnVerstuurAanvraag);
         btnAanvraagVersturen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,7 +153,7 @@ public class GegevensRegistreerFragment extends Fragment {
                     String telefoonnummer = etTelefoon.getText().toString();
                     String email = etMail.getText().toString();
                     String adres = etAdres.getText().toString();
-                    String bedrijfsnaam = etBedrijfsnaam.toString();
+                    String bedrijfsnaam = etBedrijfsnaam.getText().toString();
 
                     if (particulierRb.isChecked()) {
                         bedrijfsnaam = "";

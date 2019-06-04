@@ -199,7 +199,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardview_afspraakregistreer"
         app:layout_constraintVertical_bias="0.728"
-        app:srcCompat="@drawable/ic_arrow_forward_black_24dp" />
+        app:srcCompat="@drawable/ic_check_black_24dp" />
 
 
 </android.support.constraint.ConstraintLayout>
