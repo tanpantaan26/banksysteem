@@ -28,10 +28,21 @@ import java.util.concurrent.ExecutionException;
 =======
 import com.example.banksysteem.R;
 
+<<<<<<< HEAD
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
 >>>>>>> eccdff8f5054cfbefeabe6e0c403e80eaf0448ae
+=======
+
+/**
+ * Deze klasse zorgt ervoor dat de klant kan inloggen of kan navigeren naar het registreerscherm of infoscherm
+ * @author Inge
+ * @version 1
+ * @see InfoActivity
+ * @see RegistreerActivity
+ */
+>>>>>>> c97e84f4fdd5b9451a5fe7f616f57ec8dae2cdff
 
 public class LoginActivity extends AppCompatActivity {
 
