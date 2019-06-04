@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -15,34 +14,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.banksysteem.Data.DatabaseConnector;
-<<<<<<< HEAD
-import com.example.banksysteem.Model.Afspraak;
+
 import com.example.banksysteem.R;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
-=======
-import com.example.banksysteem.R;
 
-<<<<<<< HEAD
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Objects;
->>>>>>> eccdff8f5054cfbefeabe6e0c403e80eaf0448ae
-=======
 
 /**
  * Deze klasse zorgt ervoor dat de klant kan inloggen of kan navigeren naar het registreerscherm of infoscherm
+ *
  * @author Inge
  * @version 1
  * @see InfoActivity
  * @see RegistreerActivity
  */
->>>>>>> c97e84f4fdd5b9451a5fe7f616f57ec8dae2cdff
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -74,54 +60,16 @@ public class LoginActivity extends AppCompatActivity {
                     etWachtwoord.setError("Vul uw wachtwoord in");
                 } else {
 
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
+                    if(gebruikergoedkeuring(etGebruikersnaam.getText().toString(), etWachtwoord.getText().toString())){
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                    }else {
+                        Toast.makeText(getApplicationContext(), "U kunt niet inloggen, neem contact op met de bank.", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 }
 
-                DatabaseConnector db = new DatabaseConnector();
-                try {
-                    String SQL = "Select * from Beheer";
-                    db.execute(SQL);
-                    Object oResult = db.get();
-                    System.out.println(oResult);
-                    Toast toast = Toast.makeText(getApplicationContext(), String.valueOf(oResult.toString()), Toast.LENGTH_LONG);
-                    toast.show();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println(e);
-                }
-            }
-        });
-
-                //Check gebruiker op goedkeuring
-
-                private void gebruikergoedkeuring(Gebruikergoedkeuring) {
-
-                final String sql = "Select * From Klant Where Gebruikersnaam = '  ', Wachtwoord =' ', isGoedgekeurd='1'";
-                Log.d("Gebruikersnaam", "SQL statement: " + sql);
-                try {
-                DatabaseConnector db = new DatabaseConnector();
-                db.execute(sql);
-                Object oResult = db.get();
-
-                String strResult = oResult.toString();
-                String strResultReplace = strResult.replace("\"", "");
-                Log.d("Gebruikersnaam", "strResult: " + strResultReplace);
-
-                if (strResult.equals("msg:insert:succes")) {
-                        Toast.makeText(getContext(), "Succesvol ingelogd", Toast.LENGTH_SHORT).show();
-                } else {
-                        Toast.makeText(getContext(), "U kunt niet inloggen, neem contact op met de bank.", Toast.LENGTH_SHORT).show();
-                }
-
-
-        //Launch Mainactivity screen when Login Button is clicked
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
 
             }
         });
@@ -153,12 +101,30 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void getContext() {
-    }
+    //Check gebruiker op goedkeuring
 
-    private void getContext() {
-    }
+    private boolean gebruikergoedkeuring(String Gebruikersnaam, String wachtwoord) {
 
-    public void getContext() {
-        return context;
+        final String sql = "Select * From Klant Where Gebruikersnaam = '" + Gebruikersnaam + "' AND " +
+                "Wachtwoord = '" + wachtwoord + "' AND " + "isGoedgekeurd = 1";
+        Log.d("Gebruikersnaam", "SQL statement: " + sql);
+        try {
+            DatabaseConnector db = new DatabaseConnector();
+            db.execute(sql);
+            Object oResult = db.get();
+
+            String strResult = oResult.toString();
+            String strResultReplace = strResult.replace("\"", "");
+            Log.d("Gebruikersnaam", "strResult: " + strResultReplace);
+
+            if (!strResult.contains("msg:select:empty")) {
+                Toast.makeText(getApplicationContext(), "Succesvol ingelogd", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
+}
