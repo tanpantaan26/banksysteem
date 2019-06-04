@@ -15,9 +15,14 @@ import android.widget.Toast;
 import com.example.banksysteem.Data.DatabaseConnector;
 import com.example.banksysteem.R;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Objects;
+
+/**
+ * Deze klasse zorgt ervoor dat de klant kan inloggen of kan navigeren naar het registreerscherm of infoscherm
+ * @author Inge
+ * @version 1
+ * @see InfoActivity
+ * @see RegistreerActivity
+ */
 
 public class LoginActivity extends AppCompatActivity {
 

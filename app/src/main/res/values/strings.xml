@@ -6,6 +6,7 @@
     <string name="loginactivity_hintWachtwoord">Wachtwoord</string>
     <string name="loginactivity_registreren">REGISTREREN</string>
     <string name="loginactivity_meerInfo">Meer info?</string>
+    <string name="spinner_prompt_text">Kies een tijd</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

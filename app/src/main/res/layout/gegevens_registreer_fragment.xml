@@ -183,17 +183,17 @@
         app:layout_constraintTop_toBottomOf="@+id/gegevens_registreer_etBSN_KVK"
         app:layout_constraintVertical_bias="0.02" />
 
-    <Button
+    <ImageButton
         android:id="@+id/gegevens_registreer_btnVerstuurAanvraag"
-        android:layout_width="300dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@android:color/black"
+        android:background="@drawable/round_button"
         android:padding="10dp"
-        android:text="Aanvraag versturen"
+        android:src="@drawable/ic_check_black_24dp"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

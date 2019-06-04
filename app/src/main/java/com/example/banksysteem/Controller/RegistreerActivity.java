@@ -9,6 +9,13 @@ import android.widget.ImageButton;
 
 import com.example.banksysteem.R;
 
+/**
+ * Deze klasse is de container voor de fragments van het registreren.
+ * @author Inge
+ * @version 1
+ * @see GegevensRegistreerFragment
+ * @see AfspraakRegistreerFragment
+ */
 public class RegistreerActivity extends AppCompatActivity {
 
 
@@ -22,14 +29,5 @@ public class RegistreerActivity extends AppCompatActivity {
         //als deze navigeert naar RegistreerActivty
         getSupportFragmentManager().beginTransaction().replace(R.id.registreeractivity_fragment_container, new GegevensRegistreerFragment()).commit();
 
-        //button terug naar login scherm
-        ImageButton btnTerug = findViewById(R.id.registreeractivity_btnTerug);
-        btnTerug.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 }
