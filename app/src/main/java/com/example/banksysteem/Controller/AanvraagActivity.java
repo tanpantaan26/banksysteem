@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.banksysteem.Data.DatabaseConnector;
 import com.example.banksysteem.Model.Afspraak;
+import com.example.banksysteem.Model.Klant;
 import com.example.banksysteem.Model.Rekening;
 import com.example.banksysteem.R;
 import com.example.banksysteem.Util.AanvraagSoort;
@@ -49,6 +50,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
     private String afspraaksoort;
     private ArrayList<Rekening> rekeningenKlant;
     private ArrayList<String> afsprakenKlant;
+    private String klantID;
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     @Override
@@ -56,6 +58,10 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.aanvraag_activity);
 
+        Bundle extras = getIntent().getExtras();
+        String gebruikersnaam = (String) extras.get("Gebruikersnaam");
+        String wachtwoord = extras.getString("Wachtwoord");
+        klantID = haalKlantIDOp(gebruikersnaam, wachtwoord);
 
         //Lijst met producten waar de klant een aanvraag voor kan doen
         ArrayList<String> producten = new ArrayList<>();
@@ -167,7 +173,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
                 } else {
                     Log.d("AanvraagActivity", "else aangeroepen");
                     //voeg afspraak toe aan database
-                    Afspraak afspraak = new Afspraak("217740078", etDatepicker.getText().toString(), spinnerTijden.getSelectedItem().toString(),
+                    Afspraak afspraak = new Afspraak(klantID, etDatepicker.getText().toString(), spinnerTijden.getSelectedItem().toString(),
                             afspraaksoort);
                     Log.d("AanvraagActivity", "Nieuwe afspraak: " + afspraak.getDatum() + afspraak.getTijd() + afspraak.getAfspraakSoort());
 
@@ -275,8 +281,6 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
         }
     }
 
-    //TODO: geef klantid van ingelogde klant mee
-
     /**
      * Deze methode haalt de rekeningen van de ingelogde klant op om controles mee uit te voeren voor
      * een aanvraag gedaan kan worden in de methodes checkKlantLening() en checkKlantSchuld().
@@ -288,7 +292,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
         Log.d("Aanvraag", "HaalRekeningenKlantOp aangeroepen");
         String sql = "SELECT * FROM KlantRekening JOIN Rekening ON " +
                 "KlantRekening.RekeningRekeningnummer = Rekening.Rekeningnummer " +
-                "WHERE KlantklantID = '217740078'";
+                "WHERE KlantklantID = '" + klantID + "';";
 
         try {
             DatabaseConnector db = new DatabaseConnector();
@@ -297,7 +301,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
 
             String strResult = oResult.toString();
             String strResultReplace = strResult.replace("\"", "");
-            Log.d("Aanvraag", "strResult: " + strResultReplace);
+            Log.d("Aanvraag", "strResultRekeningen: " + strResultReplace);
 
             if (strResultReplace.equals("msg:select:empty")) {
                 Toast.makeText(this, "Er is iets misgegaan", Toast.LENGTH_SHORT).show();
@@ -383,7 +387,7 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
     private ArrayList<String> haalAfsprakenKlantOp() {
         Log.d("Aanvraag", "HaalAfsprakenKlantOp aangeroepen");
         //haal alle afspraken van een klant op uit de database
-        String sql = "SELECT * FROM Afspraak WHERE KlantklantID = '217740078'";
+        String sql = "SELECT * FROM Afspraak WHERE KlantklantID = '" + klantID + "';";
 
         try {
 
@@ -494,6 +498,48 @@ public class AanvraagActivity extends AppCompatActivity implements DatePicker.On
                 });
         AlertDialog alert11 = builder1.create();
         alert11.show();
+    }
+
+    private String haalKlantIDOp(String gebruikersnaam, String wachtwoord) {
+
+        String sql = "SELECT KlantID FROM Klant WHERE Gebruikersnaam = '" + gebruikersnaam + "' AND Wachtwoord = '" + wachtwoord + "';";
+        String klantID = "";
+
+        try {
+
+            DatabaseConnector db = new DatabaseConnector();
+            db.execute(sql);
+            Object oResult = db.get();
+
+            String strResult = oResult.toString();
+            String strResultReplace = strResult.replace("\"", "");
+            Log.d("AanvraagAfspraken", "strResult: " + strResultReplace);
+
+            if (strResultReplace.equals("msg:select:empty")) {
+                Log.d("HaalAfspraken op", "lege klant");
+                Toast.makeText(this, "Er is iets misgegaan", Toast.LENGTH_LONG).show();
+
+            } else {
+
+                Log.d("HaalKlantIDOp", "strResultKlant: " + strResult);
+
+                JSONArray jsonArray = new JSONArray(strResult);
+
+                for (int teller = 0; teller < jsonArray.length(); teller++) {
+                    JSONObject jsonObject = (JSONObject) jsonArray.get(teller);
+
+                    klantID = jsonObject.getString("KlantID");
+
+                    Log.d("HaalKlantop", "opgehaalde json: " + klantID);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return klantID;
+
+
     }
 
 }

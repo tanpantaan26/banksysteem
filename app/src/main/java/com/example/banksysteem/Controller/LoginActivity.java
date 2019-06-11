@@ -62,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     if(gebruikergoedkeuring(etGebruikersnaam.getText().toString(), etWachtwoord.getText().toString())){
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("Gebruikersnaam", gebruikersnaam);
+                        intent.putExtra("Wachtwoord", wachtwoord);
                         startActivity(intent);
                     }else {
                         Toast.makeText(getApplicationContext(), "U kunt niet inloggen, neem contact op met de bank.", Toast.LENGTH_SHORT).show();

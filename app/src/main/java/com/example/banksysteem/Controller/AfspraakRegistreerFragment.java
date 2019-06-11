@@ -60,6 +60,7 @@ public class AfspraakRegistreerFragment extends Fragment implements DatePicker.O
 
         Bundle klantGegevens = this.getArguments();
         klant = (Klant) klantGegevens.getSerializable("klantGegevens");
+        Log.d("Afspraak", "doorgestuurde klant: " + klant.getKlantId());
 
         return inflater.inflate(R.layout.afspraak_registreer_fragment, container, false);
     }

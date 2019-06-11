@@ -125,9 +125,9 @@ public class GegevensRegistreerFragment extends Fragment {
                     etMail.setError("Vul een geldige email in");
                 } else if (!valAvInput.checkAdres(etAdres.getText().toString())) {
                     etAdres.setError("Vul een geldig adres in");
-                }else if (!valAvInput.checkAlphaNumeric(etBedrijfsnaam.getText().toString())) {
+                } else if (!valAvInput.checkAlphaNumeric(etBedrijfsnaam.getText().toString())) {
                     etBedrijfsnaam.setError("Vul een geldige bedrijfsnaam in");
-                }else if (!valAvInput.checkTelefoonnummer(etTelefoon.getText().toString())) {
+                } else if (!valAvInput.checkTelefoonnummer(etTelefoon.getText().toString())) {
                     etTelefoon.setError("Vul een geldig telefoonnummer in");
                 } else if (!valAvInput.validateLetters(etVoornaam.getText().toString())) {
                     etVoornaam.setError("Voornaam mag alleen letters bevatten");
@@ -142,6 +142,8 @@ public class GegevensRegistreerFragment extends Fragment {
                         etBSN_KVK.setError("Kvk moet 8 tekens lang zijn");
 
                     }
+                } else if (!staatOpZwarteLijst(etBSN_KVK.getText().toString())) {
+
                 } else if (!isAlKlant(etBSN_KVK.getText().toString())) {
 
                 } else {
@@ -161,33 +163,15 @@ public class GegevensRegistreerFragment extends Fragment {
 
                     Klant klant = new Klant(klantId, voornaam, achternaam, telefoonnummer, email, adres, bedrijfsnaam);
 
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    Bundle klantGegevens = new Bundle();
+                    klantGegevens.putSerializable("klantGegevens", klant);
+                    AfspraakRegistreerFragment afspraakFragment = new AfspraakRegistreerFragment();
+                    afspraakFragment.setArguments(klantGegevens);
+                    fragmentManager.beginTransaction().replace(R.id.registreeractivity_fragment_container, afspraakFragment).commit();
+
                     Log.d("GegevensRegistreer", "klant: " + klant.getKlantId());
 
-                    String sql = "SELECT * FROM ZwarteLijst WHERE KlantklantID = '" + klantId + "';";
-                    try {
-                        DatabaseConnector db = new DatabaseConnector();
-                        db.execute(sql);
-                        Object oResult = db.get();
-
-                        String strResult = oResult.toString();
-                        strResult = strResult.replace("\"", "");
-                        Log.d("Registreeractivity", "strResult: " + strResult);
-
-                        if (strResult.equals("msg:select:empty")) {
-                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-
-                            Bundle klantGegevens = new Bundle();
-                            klantGegevens.putSerializable("klantGegevens", klant);
-                            AfspraakRegistreerFragment afspraakFragment = new AfspraakRegistreerFragment();
-                            afspraakFragment.setArguments(klantGegevens);
-                            fragmentManager.beginTransaction().replace(R.id.registreeractivity_fragment_container, afspraakFragment).commit();
-
-                        } else {
-                            AlertDialog("U bent afgewezen om klant te worden bij de bank");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
 
                 }
 
@@ -234,6 +218,33 @@ public class GegevensRegistreerFragment extends Fragment {
             return false;
         }
 
+
+    }
+
+    private boolean staatOpZwarteLijst(String klantId) {
+        String sql = "SELECT * FROM ZwarteLijst WHERE KlantklantID = '" + klantId + "';";
+        String strResult = "";
+        try {
+            DatabaseConnector db = new DatabaseConnector();
+            db.execute(sql);
+            Object oResult = db.get();
+
+            strResult = oResult.toString();
+            strResult = strResult.replace("\"", "");
+
+            Log.d("isAlKlant", "strResult: " + strResult);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (strResult.equals("msg:select:empty")) {
+            return true;
+        } else {
+            AlertDialog("U bent afgewezen om een aanvraag te doen");
+            return false;
+        }
 
     }
 

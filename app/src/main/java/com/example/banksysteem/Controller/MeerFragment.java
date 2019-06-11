@@ -19,10 +19,14 @@ import com.example.banksysteem.R;
  */
 public class MeerFragment extends Fragment {
 
+    private String gebruikersnaam;
+    private String wachtwoord;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.meer_fragment, container, false);
+
 
 
     }
@@ -31,12 +35,17 @@ public class MeerFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        gebruikersnaam = getArguments().getString("Gebruikersnaam");
+        wachtwoord = getArguments().getString("Wachtwoord");
+
         //menu optie om leningen/rekeningen en deposito's aan te vragen
         CardView cvAanvraagLening = view.findViewById(R.id.meerfragment_cvAanvraag);
         cvAanvraagLening.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), AanvraagActivity.class);
+                intent.putExtra("Gebruikersnaam", gebruikersnaam);
+                intent.putExtra("Wachtwoord", wachtwoord);
                 startActivity(intent);
             }
         });
